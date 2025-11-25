@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "977501946978",
+    "project_id": "unispend-mwp",
+    "storage_bucket": "unispend-mwp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:977501946978:android:42a11661d2262bb6efbd3b",
+        "android_client_info": {
+          "package_name": "com.unispend.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBy23gThqk6Ji_ggTrQkAruqBUnb-XkFEo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

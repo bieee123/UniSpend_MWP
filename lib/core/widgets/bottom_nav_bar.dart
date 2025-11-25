@@ -1,0 +1,120 @@
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
+class UniSpendBottomNavBar extends StatelessWidget {
+  final int currentIndex;
+  final VoidCallback onAddTransactionPressed;
+
+  const UniSpendBottomNavBar({
+    Key? key,
+    required this.currentIndex,
+    required this.onAddTransactionPressed,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BottomAppBar(
+      child: Container(
+        height: 60,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            // Transactions button (left)
+            _buildNavButton(
+              context: context,
+              index: 0,
+              currentIndex: currentIndex,
+              icon: Icons.list,
+              label: 'Transactions',
+              onTap: () => _navigateTo(context, '/transactions'),
+            ),
+
+            // Budgets button (left)
+            _buildNavButton(
+              context: context,
+              index: 1,
+              currentIndex: currentIndex,
+              icon: Icons.pie_chart,
+              label: 'Budgets',
+              onTap: () => _navigateTo(context, '/budget-limit'), // Using budget limit page
+            ),
+
+            // Overview button (center) - not part of indexed navigation, goes to overview which replaces dashboard
+            Container(
+              height: 50,
+              width: 50,
+              margin: const EdgeInsets.all(5),
+              child: FilledButton(
+                style: FilledButton.styleFrom(
+                  backgroundColor: Theme.of(context).primaryColor,
+                  shape: const CircleBorder(),
+                ),
+                onPressed: () => _navigateTo(context, '/overview'),
+                child: const Icon(Icons.home, color: Colors.white), // Overview/home icon
+              ),
+            ),
+
+            // Wallet button (right)
+            _buildNavButton(
+              context: context,
+              index: 2,
+              currentIndex: currentIndex,
+              icon: Icons.account_balance_wallet,
+              label: 'Wallet',
+              onTap: () => _navigateTo(context, '/wallet'), // New wallet page
+            ),
+
+            // Settings button (right)
+            _buildNavButton(
+              context: context,
+              index: 3,
+              currentIndex: currentIndex,
+              icon: Icons.settings,
+              label: 'Settings',
+              onTap: () => _navigateTo(context, '/settings'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNavButton({
+    required BuildContext context,
+    required int index,
+    required int currentIndex,
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          height: double.infinity,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                color: currentIndex == index ? Theme.of(context).primaryColor : Colors.grey,
+              ),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 10,
+                  color: currentIndex == index ? Theme.of(context).primaryColor : Colors.grey,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _navigateTo(BuildContext context, String location) {
+    // Simply navigate to the location - navigation state management is handled by GoRouter
+    context.go(location);
+  }
+}
