@@ -4,15 +4,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:go_router/go_router.dart';
 import '../../state/settings_provider.dart';
+import '../../state/auth_provider.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      appBar: AppBar(title: const Text("Settings")),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -26,7 +25,8 @@ class SettingsPage extends StatelessWidget {
                   children: [
                     const Text(
                       "Security",
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 10),
                     Consumer<SettingsProvider>(
@@ -50,7 +50,9 @@ class SettingsPage extends StatelessWidget {
                                   // Rebuild to update the switch
                                   if (context.mounted) {
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(content: Text("PIN removed successfully")),
+                                      const SnackBar(
+                                          content:
+                                              Text("PIN removed successfully")),
                                     );
                                   }
                                 }
@@ -82,26 +84,13 @@ class SettingsPage extends StatelessWidget {
 
             const SizedBox(height: 10),
 
-            // Budget Settings
-            Card(
-              child: ListTile(
-                title: const Text("Budget Limit"),
-                trailing: const Icon(Icons.account_balance_wallet),
-                onTap: () {
-                  context.push('/budget-limit');
-                },
-              ),
-            ),
-
-            const SizedBox(height: 10),
-
             // Notification Settings
             Card(
               child: ListTile(
                 title: const Text("Notifications"),
                 trailing: const Icon(Icons.notifications),
                 onTap: () {
-                  context.push('/notification-settings');
+                  context.push('/settings/notifications');
                 },
               ),
             ),
@@ -121,18 +110,48 @@ class SettingsPage extends StatelessWidget {
 
             const SizedBox(height: 10),
 
-            // Logout option
-            Card(
-              child: ListTile(
-                title: const Text("Logout"),
-                trailing: const Icon(Icons.logout),
-                onTap: () async {
-                  await FirebaseAuth.instance.signOut();
-                  if (context.mounted) {
-                    context.go('/');
-                  }
-                },
-              ),
+            // Show login/register if user is not logged in, otherwise show logout
+            Consumer<SettingsProvider>(
+              builder: (context, _, child) {
+                final isLoggedIn = FirebaseAuth.instance.currentUser != null;
+                return Column(
+                  children: [
+                    if (!isLoggedIn) ...[
+                      Card(
+                        child: ListTile(
+                          title: const Text("Login"),
+                          trailing: const Icon(Icons.login),
+                          onTap: () {
+                            context.push('/login');
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Card(
+                        child: ListTile(
+                          title: const Text("Register"),
+                          trailing: const Icon(Icons.app_registration),
+                          onTap: () {
+                            context.push('/register');
+                          },
+                        ),
+                      ),
+                    ] else
+                      Card(
+                        child: ListTile(
+                          title: const Text("Logout"),
+                          trailing: const Icon(Icons.logout),
+                          onTap: () async {
+                            await FirebaseAuth.instance.signOut();
+                            if (context.mounted) {
+                              context.go('/');
+                            }
+                          },
+                        ),
+                      ),
+                  ],
+                );
+              },
             ),
           ],
         ),

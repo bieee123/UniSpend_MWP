@@ -6,12 +6,16 @@ class MainLayout extends StatefulWidget {
   final Widget child;
   final int currentIndex;
   final String title;
+  final bool showBottomNavBar;
+  final bool showBackButton;
 
   const MainLayout({
     Key? key,
     required this.child,
     required this.currentIndex,
     required this.title,
+    this.showBottomNavBar = true,
+    this.showBackButton = true,
   }) : super(key: key);
 
   @override
@@ -22,27 +26,42 @@ class _MainLayoutState extends State<MainLayout> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-        automaticallyImplyLeading: _shouldShowBackButton(),
+      appBar: widget.showBackButton
+          ? AppBar(
+              title: Text(widget.title),
+              // Make sure to use the theme's primary color for consistency
+              backgroundColor: Theme.of(context).primaryColor,
+              foregroundColor: Colors.white,
+            )
+          : AppBar(
+              title: Text(widget.title),
+              automaticallyImplyLeading: false,
+              leading: IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+              // Make sure to use the theme's primary color for consistency
+              backgroundColor: Theme.of(context).primaryColor,
+              foregroundColor: Colors.white,
+            ),
+      body: SafeArea(
+        bottom: !widget.showBottomNavBar, // Don't apply safe area at the bottom if bottom nav is hidden
+        child: Column(
+          children: [
+            Expanded(child: widget.child),
+          ],
+        ),
       ),
-      body: Column(
-        children: [
-          Expanded(child: widget.child),
-          // Add the custom bottom navigation bar
-          UniSpendBottomNavBar(
-            currentIndex: widget.currentIndex,
-            onAddTransactionPressed: () {
-              context.go('/overview'); // Center button now goes to overview page
-            },
-          ),
-        ],
-      ),
+      bottomNavigationBar: widget.showBottomNavBar
+          ? UniSpendBottomNavBar(
+              currentIndex: widget.currentIndex,
+              onAddTransactionPressed: () {
+                context.go('/calendar'); // Center button now goes to calendar page
+              },
+            )
+          : null,
     );
-  }
-
-  bool _shouldShowBackButton() {
-    // For now, always show back button, can be refined later
-    return true;
   }
 }

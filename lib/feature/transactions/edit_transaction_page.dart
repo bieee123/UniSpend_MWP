@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import '../../state/transaction_provider.dart';
+import '../../state/budget_provider.dart';
 
 class EditTransactionPage extends StatefulWidget {
   final String transactionId;
-  
+
   const EditTransactionPage({super.key, required this.transactionId});
 
   @override
@@ -28,7 +30,7 @@ class _EditTransactionPageState extends State<EditTransactionPage> {
   Future<void> _loadTransaction() async {
     final provider = context.read<TransactionProvider>();
     final transaction = await provider.getTransaction(widget.transactionId);
-    
+
     if (transaction != null) {
       amountCtrl.text = transaction.amount.toString();
       noteCtrl.text = transaction.note;
@@ -91,7 +93,7 @@ class _EditTransactionPageState extends State<EditTransactionPage> {
             /// Category Dropdown
             DropdownButton<String>(
               value: selectedCategory,
-              items: ["General", "Food", "Transport", "Shopping"]
+              items: ["General", "Food & Drink", "Transport", "Shopping", "Others", "Salary", "Extra Income"]
                   .map((e) => DropdownMenuItem(value: e, child: Text(e)))
                   .toList(),
               onChanged: (v) => setState(() => selectedCategory = v!),
@@ -124,7 +126,16 @@ class _EditTransactionPageState extends State<EditTransactionPage> {
                   type: type,
                   date: date,
                 );
-                if (context.mounted) Navigator.pop(context);
+
+                // Update budget spending to reflect the updated transaction
+                final budgetProvider = context.read<BudgetProvider>();
+                await budgetProvider.updateSpending();
+
+                // Add a small delay to ensure the UI updates properly
+                await Future.delayed(const Duration(milliseconds: 300));
+                if (context.mounted) {
+                  context.go('/transactions'); // Navigate to transactions page to refresh data
+                }
               },
               child: const Text("Update Transaction"),
             ),

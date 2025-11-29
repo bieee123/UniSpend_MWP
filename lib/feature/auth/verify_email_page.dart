@@ -83,53 +83,156 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Verify Email")),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.email_outlined,
-              size: 80,
-              color: Theme.of(context).colorScheme.primary,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const SizedBox(height: 80),
+                // Email Icon
+                Container(
+                  alignment: Alignment.center,
+                  child: Icon(
+                    Icons.email_outlined,
+                    size: 80,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                // Title and Description
+                Container(
+                  alignment: Alignment.center,
+                  child: Column(
+                    children: [
+                      const Text(
+                        "Verify Your Email",
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      const Text(
+                        "We've sent a verification link to your email address. Please check your inbox and click the link to verify your account.",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 40),
+                // Status indicator
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[50],
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Column(
+                    children: [
+                      if (_checkingVerification)
+                        Column(
+                          children: [
+                            const CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.green,
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            const Text(
+                              "Checking verification status...",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              "Please check your email",
+                              style: TextStyle(
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                          ],
+                        )
+                      else if (isEmailVerified)
+                        Column(
+                          children: [
+                            Icon(
+                              Icons.check_circle,
+                              size: 60,
+                              color: Colors.green,
+                            ),
+                            const SizedBox(height: 16),
+                            const Text(
+                              "Email Verified!",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.green,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            const Text(
+                              "Redirecting...",
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ],
+                        ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 40),
+                // Resend Email Button
+                SizedBox(
+                  height: 50,
+                  child: OutlinedButton(
+                    onPressed: _checkingVerification ? null : sendVerificationEmail,
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                    ),
+                    child: Text(
+                      "Resend Verification Email",
+                      style: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                // Sign Out Button
+                TextButton(
+                  onPressed: () {
+                    FirebaseAuth.instance.signOut();
+                    context.go('/');
+                  },
+                  child: Text(
+                    "Sign Out",
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 20),
-            const Text(
-              "Email Verification Required",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 10),
-            const Text(
-              "A verification link has been sent to your email address. Please check your inbox and click the link to verify your account.",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 20),
-            if (_checkingVerification)
-              const CircularProgressIndicator()
-            else if (isEmailVerified)
-              const Text(
-                "Email verified! Redirecting...",
-                style: TextStyle(color: Colors.green, fontSize: 16),
-              ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                sendVerificationEmail();
-              },
-              child: const Text("Resend Verification Email"),
-            ),
-            const SizedBox(height: 20),
-            TextButton(
-              onPressed: () {
-                FirebaseAuth.instance.signOut();
-                context.go('/');
-              },
-              child: const Text("Sign Out"),
-            ),
-          ],
+          ),
         ),
       ),
     );

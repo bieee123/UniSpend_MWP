@@ -19,7 +19,7 @@ class UniSpendBottomNavBar extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            // Transactions button (left)
+            // Transactions button (index 0)
             _buildNavButton(
               context: context,
               index: 0,
@@ -29,7 +29,7 @@ class UniSpendBottomNavBar extends StatelessWidget {
               onTap: () => _navigateTo(context, '/transactions'),
             ),
 
-            // Budgets button (left)
+            // Budgets button (index 1)
             _buildNavButton(
               context: context,
               index: 1,
@@ -39,35 +39,30 @@ class UniSpendBottomNavBar extends StatelessWidget {
               onTap: () => _navigateTo(context, '/budget-limit'), // Using budget limit page
             ),
 
-            // Overview button (center) - not part of indexed navigation, goes to overview which replaces dashboard
-            Container(
-              height: 50,
-              width: 50,
-              margin: const EdgeInsets.all(5),
-              child: FilledButton(
-                style: FilledButton.styleFrom(
-                  backgroundColor: Theme.of(context).primaryColor,
-                  shape: const CircleBorder(),
-                ),
-                onPressed: () => _navigateTo(context, '/overview'),
-                child: const Icon(Icons.home, color: Colors.white), // Overview/home icon
-              ),
-            ),
-
-            // Wallet button (right)
+            // Overview button (index 2)
             _buildNavButton(
               context: context,
               index: 2,
               currentIndex: currentIndex,
-              icon: Icons.account_balance_wallet,
-              label: 'Wallet',
-              onTap: () => _navigateTo(context, '/wallet'), // New wallet page
+              icon: Icons.dashboard,
+              label: 'Overview',
+              onTap: () => _navigateTo(context, '/overview'),
             ),
 
-            // Settings button (right)
+            // Calendar button (index 3)
             _buildNavButton(
               context: context,
               index: 3,
+              currentIndex: currentIndex,
+              icon: Icons.calendar_today,
+              label: 'Calendar',
+              onTap: () => _navigateTo(context, '/calendar'),
+            ),
+
+            // Settings button (index 4)
+            _buildNavButton(
+              context: context,
+              index: 4,
               currentIndex: currentIndex,
               icon: Icons.settings,
               label: 'Settings',

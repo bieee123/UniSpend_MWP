@@ -14,18 +14,31 @@ class FirestoreService {
         .set(transaction.toMap());
   }
 
-  // Get all transactions for a user
+  // Get all transactions for a user - supporting both possible field names
   Stream<List<TransactionModel>> streamTransactions(String userId) {
+    print("Stream query for user_id: $userId");
     return _db
         .collection('transactions')
-        .where('user_id', isEqualTo: userId)
+        .where('user_id', isEqualTo: userId)  // try the new standard format
         .orderBy('date', descending: true)
         .snapshots()
-        .map(
-          (snap) => snap.docs
-              .map((d) => TransactionModel.fromMap(d.data(), d.id))
-              .toList(),
-        );
+        .map((snap) {
+          print("Received ${snap.docs.length} documents from Firestore");
+          final transactions = <TransactionModel>[];
+          for (final doc in snap.docs) {
+            try {
+              print("Processing document ${doc.id} with data: ${doc.data()}");
+              final transaction = TransactionModel.fromMap(doc.data(), doc.id);
+              transactions.add(transaction);
+            } catch (e) {
+              print('Error parsing transaction: $e');
+              // Skip invalid transactions
+              continue;
+            }
+          }
+          print("Successfully parsed ${transactions.length} transactions");
+          return transactions;
+        });
   }
 
   // Update transaction

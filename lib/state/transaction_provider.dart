@@ -29,10 +29,12 @@ class TransactionProvider extends ChangeNotifier {
     );
 
     try {
+      print("Adding transaction with userId: ${transaction.userId}");
+      print("Transaction data to be saved: ${transaction.toMap()}");
       await _firestore.addTransaction(transaction);
-      // Also notify listeners to ensure UI updates in case
-      // the stream doesn't update immediately
-      notifyListeners();
+      print("Transaction added successfully");
+      // Note: We DON'T call notifyListeners() here since Firestore streams
+      // handle real-time updates automatically
     } catch (e) {
       print('Error adding transaction: $e');
       rethrow;
@@ -42,9 +44,11 @@ class TransactionProvider extends ChangeNotifier {
   Stream<List<TransactionModel>> streamTransactions() {
     final currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser == null) {
+      print("No current user found");
       return Stream.value([]);
     }
 
+    print("Querying transactions for user: ${currentUser.uid}");
     // Return the Firestore stream directly for real-time updates
     return _firestore.streamTransactions(currentUser.uid);
   }
@@ -71,12 +75,14 @@ class TransactionProvider extends ChangeNotifier {
     );
 
     await _firestore.updateTransaction(id, transaction);
-    notifyListeners();
+    // Note: We DON'T call notifyListeners() here since Firestore streams
+    // handle real-time updates automatically
   }
 
   Future<void> deleteTransaction(String id) async {
     await _firestore.deleteTransaction(id);
-    notifyListeners();
+    // Note: We DON'T call notifyListeners() here since Firestore streams
+    // handle real-time updates automatically
   }
 
   Future<TransactionModel?> getTransaction(String id) async {

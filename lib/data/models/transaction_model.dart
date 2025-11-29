@@ -20,14 +20,26 @@ class TransactionModel {
   });
 
   factory TransactionModel.fromMap(Map<String, dynamic> data, String id) {
+    // Debug logging to see actual field names
+    print("Parsing transaction data: $data");
+
+    // Handle potential inconsistencies in field naming
     return TransactionModel(
       id: id,
-      userId: data['user_id'] ?? '',
-      categoryId: data['category_id'] ?? '',
-      amount: (data['amount'] ?? 0).toDouble(),
-      type: data['type'] ?? 'expense',
-      note: data['note'] ?? '',
-      date: (data['date'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      userId: data['user_id'] as String? ??
+              data['userId'] as String? ??
+              data['user_Id'] as String? ??
+              data['user_ID'] as String? ?? '',
+      categoryId: data['category_id'] as String? ??
+                  data['categoryId'] as String? ??
+                  data['category_Id'] as String? ??
+                  data['categoryID'] as String? ?? '',
+      amount: (data['amount'] as num? ?? 0).toDouble(),
+      type: data['type'] as String? ?? 'expense',
+      note: data['note'] as String? ?? '',
+      date: ((data['date'] as Timestamp?)?.toDate()) ??
+            (data['date'] as DateTime?) ??
+            DateTime.now(),
     );
   }
 

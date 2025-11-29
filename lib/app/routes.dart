@@ -16,6 +16,7 @@ import '../feature/categories/add_category_page.dart';
 import '../feature/categories/edit_category_page.dart';
 import '../feature/pin/set_pin_page.dart';
 import '../feature/pin/verify_pin_page.dart';
+import '../feature/settings/add_budget_page.dart';
 import '../feature/settings/budget_limit_page.dart';
 import '../feature/settings/export_page.dart';
 import '../feature/settings/notification_settings_page.dart';
@@ -37,7 +38,7 @@ final GoRouter router = GoRouter(
       path: '/',
       name: 'dashboard',
       builder: (context, state) => MainLayout(
-        currentIndex: 0, // Transactions page is now at index 0 (transactions=0, budgets=1, wallet=2, settings=3)
+        currentIndex: 0, // Transactions page is now at index 0 (transactions=0, budgets=1, analytics=2, settings=3)
         title: 'Transactions',
         child: const TransactionListPage(),
       ),
@@ -46,7 +47,7 @@ final GoRouter router = GoRouter(
       path: '/dashboard',
       name: 'dashboard_main',
       builder: (context, state) => MainLayout(
-        currentIndex: 0, // Transactions page is now at index 0 (transactions=0, budgets=1, wallet=2, settings=3)
+        currentIndex: 0, // Transactions page is now at index 0 (transactions=0, budgets=1, analytics=2, settings=3)
         title: 'Transactions',
         child: const TransactionListPage(),
       ),
@@ -55,7 +56,7 @@ final GoRouter router = GoRouter(
       path: '/transactions',
       name: 'transactions',
       builder: (context, state) => MainLayout(
-        currentIndex: 0, // Transactions page is now at index 0 (transactions=0, budgets=1, wallet=2, settings=3)
+        currentIndex: 0, // Transactions page is now at index 0 (transactions=0, budgets=1, analytics=2, settings=3)
         title: 'Transactions',
         child: const TransactionListPage(),
       ),
@@ -64,8 +65,10 @@ final GoRouter router = GoRouter(
       path: '/transactions/add',
       name: 'add_transaction',
       builder: (context, state) => MainLayout(
-        currentIndex: 0, // Transactions page index (transactions=0, budgets=1, wallet=2, settings=3)
+        currentIndex: 0, // Transactions page index (transactions=0, budgets=1, analytics=2, settings=3)
         title: 'Add Transaction',
+        showBottomNavBar: false,
+        showBackButton: false,
         child: const AddTransactionPage(),
       ),
     ),
@@ -73,7 +76,7 @@ final GoRouter router = GoRouter(
       path: '/transactions/edit/:id',
       name: 'edit_transaction',
       builder: (context, state) => MainLayout(
-        currentIndex: 0, // Transactions page index (transactions=0, budgets=1, wallet=2, settings=3)
+        currentIndex: 0, // Transactions page index (transactions=0, budgets=1, analytics=2, settings=3)
         title: 'Edit Transaction',
         child: EditTransactionPage(transactionId: state.pathParameters['id']!),
       ),
@@ -82,7 +85,7 @@ final GoRouter router = GoRouter(
       path: '/budgets',
       name: 'budgets',
       builder: (context, state) => MainLayout(
-        currentIndex: 1, // Budgets page is now at index 1 (transactions=0, budgets=1, wallet=2, settings=3)
+        currentIndex: 1, // Budgets page is now at index 1 (transactions=0, budgets=1, analytics=2, settings=3)
         title: 'Budgets',
         child: const BudgetLimitPage(), // Using budget limit page as the budgets page
       ),
@@ -91,7 +94,7 @@ final GoRouter router = GoRouter(
       path: '/categories/add',
       name: 'add_category',
       builder: (context, state) => MainLayout(
-        currentIndex: 1, // Budgets page index (transactions=0, budgets=1, wallet=2, settings=3)
+        currentIndex: 1, // Budgets page index (transactions=0, budgets=1, analytics=2, settings=3)
         title: 'Add Category',
         child: const AddCategoryPage(),
       ),
@@ -100,7 +103,7 @@ final GoRouter router = GoRouter(
       path: '/categories/edit/:id',
       name: 'edit_category',
       builder: (context, state) => MainLayout(
-        currentIndex: 1, // Budgets page index (transactions=0, budgets=1, wallet=2, settings=3)
+        currentIndex: 1, // Budgets page index (transactions=0, budgets=1, analytics=2, settings=3)
         title: 'Edit Category',
         child: EditCategoryPage(categoryId: state.pathParameters['id']!),
       ),
@@ -109,7 +112,7 @@ final GoRouter router = GoRouter(
       path: '/settings',
       name: 'settings',
       builder: (context, state) => MainLayout(
-        currentIndex: 3, // Settings page (transactions=0, budgets=1, wallet=2, settings=3)
+        currentIndex: 4, // Settings page (transactions=0, budgets=1, overview=2, calendar=3, settings=4)
         title: 'Settings',
         child: const SettingsPage(),
       ),
@@ -118,24 +121,29 @@ final GoRouter router = GoRouter(
       path: '/settings/notifications',
       name: 'settings_notifications',
       builder: (context, state) => MainLayout(
-        currentIndex: 3, // Notifications page (transactions=0, budgets=1, wallet=2, settings=3) - same as settings
+        currentIndex: 4, // Notifications page (transactions=0, budgets=1, overview=2, calendar=3, settings=4) - same as settings
         title: 'Notifications',
-        child: const NotificationSettingsPage(),
+        child: const NotificationSettingsPage(isInMainLayout: true),
       ),
     ),
     GoRoute(
-      path: '/wallet',
+      path: '/wallet', // Keep the path for backward compatibility or redirect
       name: 'wallet',
-      builder: (context, state) => MainLayout(
-        currentIndex: 2, // Wallet page (transactions=0, budgets=1, wallet=2, settings=3)
-        title: 'Wallet',
-        child: const Center(child: Text('Wallet Page - Coming Soon')), // Will implement wallet page later
-      ),
+      redirect: (context, state) => '/calendar', // Redirect wallet path to calendar
     ),
     GoRoute(
       path: '/overview',
       name: 'overview',
-      builder: (context, state) => const OverviewPage(), // Replaces dashboard - shows expenses by category
+      builder: (context, state) => MainLayout(
+        currentIndex: 2, // Overview at index 2 (transactions=0, budgets=1, analytics=2, settings=3)
+        title: 'Overview',
+        child: const OverviewPage(),
+      ),
+    ),
+    GoRoute(
+      path: '/login',
+      name: 'login',
+      builder: (context, state) => const LoginPage(),
     ),
     GoRoute(
       path: '/register',
@@ -166,16 +174,27 @@ final GoRouter router = GoRouter(
       path: '/budget-limit',
       name: 'budget_limit',
       builder: (context, state) => MainLayout(
-        currentIndex: 1, // Budgets page index (transactions=0, budgets=1, wallet=2, settings=3)
-        title: 'Budget Limit',
+        currentIndex: 1, // Budgets page index (transactions=0, budgets=1, analytics=2, settings=3)
+        title: 'Budgets',
         child: const BudgetLimitPage(),
+      ),
+    ),
+    GoRoute(
+      path: '/budgets/add',
+      name: 'add_budget',
+      builder: (context, state) => MainLayout(
+        currentIndex: 1, // Budgets page index (transactions=0, budgets=1, analytics=2, settings=3)
+        title: 'Add Budget',
+        showBottomNavBar: false,
+        showBackButton: false,
+        child: const AddBudgetPage(),
       ),
     ),
     GoRoute(
       path: '/calendar',
       name: 'calendar',
       builder: (context, state) => MainLayout(
-        currentIndex: 0, // Transactions page index (transactions=0, budgets=1, wallet=2, settings=3)
+        currentIndex: 3, // Calendar at index 3 (transactions=0, budgets=1, overview=2, calendar=3, settings=4)
         title: 'Calendar',
         child: const CalendarPage(),
       ),
@@ -184,7 +203,7 @@ final GoRouter router = GoRouter(
       path: '/export',
       name: 'export',
       builder: (context, state) => MainLayout(
-        currentIndex: 3, // Settings page index (transactions=0, budgets=1, wallet=2, settings=3)
+        currentIndex: 4, // Settings page index (transactions=0, budgets=1, overview=2, calendar=3, settings=4)
         title: 'Export',
         child: const ExportPage(),
       ),
@@ -193,7 +212,7 @@ final GoRouter router = GoRouter(
       path: '/analytics',
       name: 'analytics',
       builder: (context, state) => MainLayout(
-        currentIndex: 0, // Transactions page index (transactions=0, budgets=1, wallet=2, settings=3)
+        currentIndex: 2, // Analytics at index 2 (transactions=0, budgets=1, analytics=2, settings=3)
         title: 'Analytics',
         child: const AnalyticsPage(),
       ),
