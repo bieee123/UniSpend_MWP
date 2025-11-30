@@ -1,5 +1,4 @@
-import 'package:provider/provider.dart';
-import '../state/settings_provider.dart';
+import '../../state/settings_provider.dart';
 import 'notification_service.dart';
 
 class NotificationManager {
