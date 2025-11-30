@@ -104,27 +104,30 @@ class _SetPINPageState extends State<SetPINPage> {
 
     // Navigate back to settings or wherever appropriate
     if (mounted) {
-      Navigator.pop(context);
+      // Show success message first
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("PIN set successfully!")),
+        const SnackBar(
+          content: Text("PIN set successfully!"),
+          backgroundColor: Colors.green,
+        ),
       );
+
+      // Wait a bit to show the success message before navigating
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      Navigator.pop(context);
     }
   }
 
   void _showErrorDialog(String message) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text("Error"),
-        content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text("OK"),
-          ),
-        ],
-      ),
-    );
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   @override

@@ -31,15 +31,15 @@ class _OverviewPageState extends State<OverviewPage> {
                 Icon(
                   Icons.lock_outline,
                   size: 80,
-                  color: Colors.grey[400],
+                  color: const Color(0xFF0A7F66), // Emerald Deep Green
                 ),
                 const SizedBox(height: 24),
-                const Text(
+                Text(
                   'Please log in to view your financial overview',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w500,
-                    color: Colors.grey,
+                    color: const Color(0xFF0A7F66), // Emerald Deep Green
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -48,7 +48,7 @@ class _OverviewPageState extends State<OverviewPage> {
                   'Your spending and income data will appear here after you sign in',
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.grey[600],
+                    color: const Color(0xFF0A7F66), // Emerald Deep Green
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -76,15 +76,15 @@ class _OverviewPageState extends State<OverviewPage> {
                         Icon(
                           Icons.error_outline,
                           size: 80,
-                          color: Colors.red[400],
+                          color: const Color(0xFF0A7F66), // Emerald Deep Green
                         ),
                         const SizedBox(height: 24),
-                        const Text(
+                        Text(
                           'Error loading financial data',
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w500,
-                            color: Colors.red,
+                            color: const Color(0xFF0A7F66), // Emerald Deep Green
                           ),
                           textAlign: TextAlign.center,
                         ),
@@ -93,7 +93,7 @@ class _OverviewPageState extends State<OverviewPage> {
                           'Please try again later',
                           style: TextStyle(
                             fontSize: 14,
-                            color: Colors.grey[600],
+                            color: const Color(0xFF0A7F66), // Emerald Deep Green
                           ),
                           textAlign: TextAlign.center,
                         ),
@@ -129,16 +129,29 @@ class _OverviewPageState extends State<OverviewPage> {
 
               // Month Selector and Cards
               return SingleChildScrollView(
+                padding: const EdgeInsets.all(16.0), // Add padding to match the lock screen
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    MonthSelector(
-                      months: const ["Jul 2025", "Aug 2025", "Sep 2025", "Oct 2025", "Nov 2025"],
-                      initialIndex: 4,
-                      onMonthChanged: (index) {
-                        // Handle month change
-                      },
+                    Container(
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF0A7F66).withOpacity(0.05), // Light Emerald Deep Green background
+                        borderRadius: BorderRadius.circular(16), // Modern rounded corners
+                        border: Border.all(
+                          color: const Color(0xFF0A7F66).withOpacity(0.3), // Emerald Deep Green border
+                          width: 1,
+                        ),
+                      ),
+                      child: MonthSelector(
+                        months: const ["Jul 2025", "Aug 2025", "Sep 2025", "Oct 2025", "Nov 2025"],
+                        initialIndex: 4,
+                        onMonthChanged: (index) {
+                          // Handle month change
+                        },
+                      ),
                     ),
+
+                    const SizedBox(height: 16), // Consistent spacing
 
                     // Expenses Section
                     ExpensesCard(
@@ -147,6 +160,8 @@ class _OverviewPageState extends State<OverviewPage> {
                       totalExpense: totalExpense,
                     ),
 
+                    const SizedBox(height: 16), // Consistent spacing
+
                     // Income Section
                     IncomeCard(
                       transactions: transactions,
@@ -154,7 +169,7 @@ class _OverviewPageState extends State<OverviewPage> {
                       totalIncome: totalIncome,
                     ),
 
-                    const SizedBox(height: 16), // Add consistent spacing between cards
+                    const SizedBox(height: 16), // Consistent spacing
 
                     // Total Wealth & Cashflow Card
                     TotalWealthCashflowCard(

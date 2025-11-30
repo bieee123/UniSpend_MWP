@@ -32,51 +32,76 @@ class _BudgetLimitPageState extends State<BudgetLimitPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Title
-                    const Text(
-                      'Your Budgets',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black87,
-                      ),
-                    ),
                     const SizedBox(height: 16),
 
                     // Budget list
                     if (budgets.isEmpty)
-                      // Placeholder for empty budget list
-                      Padding(
-                        padding: const EdgeInsets.all(24.0),
-                        child: Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
+                      // Enhanced placeholder for empty budget list - centered
+                      Container(
+                        margin: const EdgeInsets.only(top: 100, bottom: 100), // Increased margins to position content lower
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: 120,
+                              height: 120,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFE8F5E9), // Light green background
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: const Color(0xFF0A7F66).withOpacity(0.2), // Light border
+                                  width: 2,
+                                ),
+                              ),
+                              child: Icon(
                                 Icons.account_balance_wallet_outlined,
-                                size: 80,
-                                color: Colors.grey[400],
+                                size: 50,
+                                color: const Color(0xFF0A7F66), // Emerald Deep Green
                               ),
-                              const SizedBox(height: 24),
-                              const Text(
-                                'No budgets yet',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.grey,
-                                ),
+                            ),
+                            const SizedBox(height: 24),
+                            Text(
+                              'Start Managing Your Budget',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                                color: const Color(0xFF0A7F66), // Emerald Deep Green
                               ),
-                              const SizedBox(height: 8),
-                              Text(
-                                'Create your first budget to start tracking limits',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey[600],
-                                ),
-                                textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'Set spending limits to track and control your expenses',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey[600],
                               ),
-                            ],
-                          ),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 24),
+                            Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: Colors.grey[100],
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Column(
+                                children: [
+                                  _buildBenefitItem("Track spending", Icons.show_chart),
+                                  _buildBenefitItem("Set limits", Icons.monetization_on),
+                                  _buildBenefitItem("Stay organized", Icons.check_circle),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 24),
+                            Text(
+                              'Create your first budget to start tracking limits',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: const Color(0xFF0A7F66), // Emerald Deep Green
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
                         ),
                       )
                     else
@@ -98,14 +123,36 @@ class _BudgetLimitPageState extends State<BudgetLimitPage> {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          context.push('/budgets/add');
-        },
-        backgroundColor: Colors.green,
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
+      floatingActionButton: Container(
+        width: 56,
+        height: 56,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.green, Colors.teal],
+          ),
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              offset: Offset(0, 4),
+              blurRadius: 8,
+            ),
+          ],
+        ),
+        child: FloatingActionButton(
+          onPressed: () {
+            context.push('/budgets/add');
+          },
+          backgroundColor: Colors.transparent,
+          heroTag: "add_budget_fab",
+          elevation: 0,
+          highlightElevation: 0,
+          focusElevation: 0,
+          disabledElevation: 0,
+          child: const Icon(
+            Icons.add,
+            color: Colors.white,
+          ),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
@@ -165,6 +212,29 @@ class _BudgetLimitPageState extends State<BudgetLimitPage> {
       default:
         return Colors.grey;
     }
+  }
+
+  Widget _buildBenefitItem(String title, IconData icon) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Row(
+        children: [
+          Icon(
+            icon,
+            color: const Color(0xFF0A7F66), // Emerald Deep Green
+            size: 20,
+          ),
+          const SizedBox(width: 8),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.grey[700],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   String _getMonthName(int month) {

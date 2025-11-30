@@ -30,17 +30,22 @@ class _AddBudgetPageState extends State<AddBudgetPage> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.grey[50],
-                borderRadius: BorderRadius.circular(12),
+                color: const Color(0xFF0A7F66).withOpacity(0.05), // Light Emerald Deep Green background
+                borderRadius: BorderRadius.circular(16), // More rounded corners
+                border: Border.all(
+                  color: const Color(0xFF0A7F66).withOpacity(0.3), // Emerald Deep Green border
+                  width: 1,
+                ),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     "Budget Amount (Rp)",
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
+                      color: const Color(0xFF0A7F66), // Emerald Deep Green text
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -49,12 +54,12 @@ class _AddBudgetPageState extends State<AddBudgetPage> {
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       hintText: "0",
-                      prefix: const Text(
+                      prefix: Text(
                         "Rp ",
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
-                          color: Colors.green,
+                          color: const Color(0xFF0A7F66), // Emerald Deep Green
                         ),
                       ),
                       hintStyle: const TextStyle(
@@ -68,7 +73,7 @@ class _AddBudgetPageState extends State<AddBudgetPage> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(color: Colors.green, width: 2),
+                        borderSide: BorderSide(color: const Color(0xFF0A7F66), width: 2), // Emerald Deep Green
                       ),
                     ),
                     style: const TextStyle(
@@ -107,29 +112,53 @@ class _AddBudgetPageState extends State<AddBudgetPage> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.grey[50],
-                borderRadius: BorderRadius.circular(12),
+                color: const Color(0xFF0A7F66).withOpacity(0.05), // Light Emerald Deep Green background
+                borderRadius: BorderRadius.circular(16), // More rounded corners
+                border: Border.all(
+                  color: const Color(0xFF0A7F66).withOpacity(0.3), // Emerald Deep Green border
+                  width: 1,
+                ),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     "Budget For",
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
+                      color: const Color(0xFF0A7F66), // Emerald Deep Green text
                     ),
                   ),
                   const SizedBox(height: 12),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: [
-                      _buildCategoryChip("Food & Drink", Icons.local_cafe),
-                      _buildCategoryChip("Transport", Icons.directions_car),
-                      _buildCategoryChip("Shopping", Icons.shopping_bag),
-                      _buildCategoryChip("Others", Icons.category),
-                    ],
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12), // More rounded corners
+                      border: Border.all(
+                        color: const Color(0xFF0A7F66).withOpacity(0.5), // Emerald Deep Green border
+                        width: 1,
+                      ),
+                    ),
+                    child: DropdownButton<String>(
+                      value: _selectedCategory,
+                      isExpanded: true,
+                      underline: const SizedBox(), // Remove the default underline
+                      items: [
+                        _buildDropdownItem("Food & Drink", Icons.local_cafe),
+                        _buildDropdownItem("Transport", Icons.directions_car),
+                        _buildDropdownItem("Shopping", Icons.shopping_bag),
+                        _buildDropdownItem("Others", Icons.category),
+                      ],
+                      onChanged: (String? newValue) {
+                        if (newValue != null) {
+                          setState(() {
+                            _selectedCategory = newValue;
+                          });
+                        }
+                      },
+                    ),
                   ),
                 ],
               ),
@@ -140,17 +169,22 @@ class _AddBudgetPageState extends State<AddBudgetPage> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.grey[50],
-                borderRadius: BorderRadius.circular(12),
+                color: const Color(0xFF0A7F66).withOpacity(0.05), // Light Emerald Deep Green background
+                borderRadius: BorderRadius.circular(16), // More rounded corners
+                border: Border.all(
+                  color: const Color(0xFF0A7F66).withOpacity(0.3), // Emerald Deep Green border
+                  width: 1,
+                ),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     "Budget Duration",
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
+                      color: const Color(0xFF0A7F66), // Emerald Deep Green text
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -162,19 +196,24 @@ class _AddBudgetPageState extends State<AddBudgetPage> {
                       width: 40,
                       height: 40,
                       decoration: BoxDecoration(
-                        color: _isMonthlyBudget ? Colors.green.withOpacity(0.1) : Colors.grey.withOpacity(0.1),
+                        color: _isMonthlyBudget
+                          ? const Color(0xFF0A7F66).withOpacity(0.1) // Light Emerald Deep Green background
+                          : Colors.grey.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Icon(
                         Icons.schedule,
-                        color: _isMonthlyBudget ? Colors.green : Colors.grey,
+                        color: _isMonthlyBudget
+                          ? const Color(0xFF0A7F66) // Emerald Deep Green
+                          : Colors.grey,
                       ),
                     ),
-                    title: const Text(
+                    title: Text(
                       "Monthly Budget",
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
+                        color: const Color(0xFF0A7F66), // Emerald Deep Green
                       ),
                     ),
                     trailing: Switch(
@@ -204,12 +243,12 @@ class _AddBudgetPageState extends State<AddBudgetPage> {
                         width: 40,
                         height: 40,
                         decoration: BoxDecoration(
-                          color: Colors.blue.withOpacity(0.1),
+                          color: const Color(0xFF0A7F66).withOpacity(0.1), // Light Emerald Deep Green background
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.calendar_today,
-                          color: Colors.blue,
+                          color: const Color(0xFF0A7F66), // Emerald Deep Green
                         ),
                       ),
                       title: Text(
@@ -219,10 +258,10 @@ class _AddBudgetPageState extends State<AddBudgetPage> {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
-                          color: _endDate != null ? Colors.black : Colors.grey,
+                          color: _endDate != null ? const Color(0xFF0A7F66) : Colors.grey, // Emerald Deep Green when selected
                         ),
                       ),
-                      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                      trailing: Icon(Icons.arrow_forward_ios, size: 16, color: const Color(0xFF0A7F66)), // Emerald Deep Green
                       onTap: () async {
                         final DateTime? picked = await showDatePicker(
                           context: context,
@@ -232,10 +271,10 @@ class _AddBudgetPageState extends State<AddBudgetPage> {
                           builder: (context, child) {
                             return Theme(
                               data: Theme.of(context).copyWith(
-                                colorScheme: const ColorScheme.light(
-                                  primary: Colors.green, // header background color
+                                colorScheme: ColorScheme.light(
+                                  primary: const Color(0xFF0A7F66), // header background color - Emerald Deep Green
                                   onPrimary: Colors.white, // header text color
-                                  onSurface: Colors.green, // body text color
+                                  onSurface: const Color(0xFF0A7F66), // body text color - Emerald Deep Green
                                 ),
                               ),
                               child: child!,
@@ -257,18 +296,18 @@ class _AddBudgetPageState extends State<AddBudgetPage> {
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: Colors.green.withOpacity(0.1),
+                        color: const Color(0xFF0A7F66).withOpacity(0.1), // Light Emerald Deep Green
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Row(
                         children: [
-                          const Icon(Icons.info, color: Colors.green, size: 16),
+                          Icon(Icons.info, color: const Color(0xFF0A7F66), size: 16), // Emerald Deep Green
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(
                               "Ends on: ${_endDate!.day} ${_getMonthName(_endDate!.month)} ${_endDate!.year}",
-                              style: const TextStyle(
-                                color: Colors.green,
+                              style: TextStyle(
+                                color: const Color(0xFF0A7F66), // Emerald Deep Green
                                 fontSize: 14,
                               ),
                             ),
@@ -373,7 +412,7 @@ class _AddBudgetPageState extends State<AddBudgetPage> {
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
+                  backgroundColor: const Color(0xFF0A7F66), // Emerald Deep Green
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
@@ -395,33 +434,30 @@ class _AddBudgetPageState extends State<AddBudgetPage> {
     );
   }
 
-  Widget _buildCategoryChip(String label, IconData icon) {
-    bool isSelected = _selectedCategory == label;
-    return ChoiceChip(
-      label: Text(label),
-      avatar: Icon(icon, size: 16),
-      selected: isSelected,
-      onSelected: (selected) {
-        setState(() {
-          if (selected) {
-            _selectedCategory = label;
-          }
-        });
-      },
-      selectedColor: Colors.green.withOpacity(0.2),
-      backgroundColor: Colors.grey[200],
-      labelStyle: TextStyle(
-        color: isSelected ? Colors.green : null,
-        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-      ),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-        side: BorderSide(
-          color: isSelected ? Colors.green : Colors.grey,
-          width: isSelected ? 2 : 1,
-        ),
+  DropdownMenuItem<String> _buildDropdownItem(String label, IconData icon) {
+    return DropdownMenuItem<String>(
+      value: label,
+      child: Row(
+        children: [
+          Icon(icon, size: 18, color: _getCategoryColor(label)),
+          const SizedBox(width: 8),
+          Text(label),
+        ],
       ),
     );
+  }
+
+  Color _getCategoryColor(String category) {
+    switch (category.toLowerCase()) {
+      case 'food & drink':
+        return Colors.orange;
+      case 'transport':
+        return Colors.blue;
+      case 'shopping':
+        return Colors.purple;
+      default:
+        return Colors.grey;
+    }
   }
 
   String _getMonthName(int month) {

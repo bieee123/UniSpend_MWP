@@ -30,38 +30,47 @@ class _MonthSelectorState extends State<MonthSelector> {
     return Container(
       height: 40,
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: widget.months.length,
-        itemBuilder: (context, index) {
-          bool isSelected = index == _selectedIndex;
-          return GestureDetector(
-            onTap: () {
-              setState(() {
-                _selectedIndex = index;
-              });
-              widget.onMonthChanged(index);
-            },
-            child: Container(
-              margin: const EdgeInsets.only(right: 8),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              decoration: BoxDecoration(
-                color: isSelected ? Colors.green : Colors.grey[200],
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Center(
-                child: Text(
-                  widget.months[index],
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: isSelected ? Colors.white : Colors.grey[700],
+      child: Scrollbar(
+        thickness: 0, // Make scrollbar invisible
+        thumbVisibility: false, // Hide scrollbar thumb
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: widget.months.length,
+          itemBuilder: (context, index) {
+            bool isSelected = index == _selectedIndex;
+            return GestureDetector(
+              onTap: () {
+                setState(() {
+                  _selectedIndex = index;
+                });
+                widget.onMonthChanged(index);
+              },
+              child: Container(
+                margin: const EdgeInsets.only(right: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                decoration: BoxDecoration(
+                  color: isSelected ? null : Colors.grey[200],
+                  gradient: isSelected
+                    ? const LinearGradient(
+                        colors: [Colors.green, Colors.teal],
+                      )
+                    : null,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Center(
+                  child: Text(
+                    widget.months[index],
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: isSelected ? Colors.white : Colors.grey[700],
+                    ),
                   ),
                 ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

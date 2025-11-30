@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AppTheme {
-  static const Color primaryColor = Color(0xFF2196F3);
+  static const Color primaryColor = Color(0xFF0A7F66); // Emerald Deep Green
   static const Color secondaryColor = Color(0xFF9C27B0);
   static const Color backgroundColor = Color(0xFFF5F5F5);
   static const Color cardColor = Color(0xFFFFFFFF);
@@ -11,7 +11,7 @@ class AppTheme {
   static const Color infoColor = Color(0xFF1976D2);
 
   // Dark theme colors
-  static const Color darkPrimaryColor = Color(0xFF1976D2);
+  static const Color darkPrimaryColor = Color(0xFF076C72); // Teal Forest (darker version of header color)
   static const Color darkSecondaryColor = Color(0xFFAB47BC);
   static const Color darkBackgroundColor = Color(0xFF121212);
   static const Color darkCardColor = Color(0xFF1E1E1E);

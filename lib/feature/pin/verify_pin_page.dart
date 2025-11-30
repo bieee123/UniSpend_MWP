@@ -82,9 +82,9 @@ class _VerifyPINPageState extends State<VerifyPINPage> {
     String? storedHashedPIN = prefs.getString('pin');
 
     if (storedHashedPIN == null) {
-      // If no PIN is set, navigate to set PIN page
+      // If no PIN is set, navigate to transactions (shouldn't happen if coming from splash)
       if (mounted) {
-        context.go('/settings');
+        context.go('/transactions');
       }
       return;
     }
@@ -94,6 +94,13 @@ class _VerifyPINPageState extends State<VerifyPINPage> {
       if (widget.nextRoute != null && mounted) {
         context.go(widget.nextRoute!);
       } else if (mounted) {
+        // Show success message before navigating
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Access granted!"),
+            backgroundColor: Colors.green,
+          ),
+        );
         Navigator.pop(context); // Just pop if no specific route
       }
     } else {

@@ -79,7 +79,7 @@ class _TransactionListPageState extends State<TransactionListPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 16),
+              const SizedBox(height: 4),
 
               // Month Selector
               Row(
@@ -87,6 +87,7 @@ class _TransactionListPageState extends State<TransactionListPage> {
                   IconButton(
                     onPressed: _previousMonth,
                     icon: const Icon(Icons.chevron_left),
+                    color: Colors.grey, // Changed to grey for better contrast
                   ),
                   Expanded(
                     child: Text(
@@ -95,16 +96,18 @@ class _TransactionListPageState extends State<TransactionListPage> {
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w500,
+                        color: Color(0xFF0A7F66), // Emerald Deep Green
                       ),
                     ),
                   ),
                   IconButton(
                     onPressed: _nextMonth,
                     icon: const Icon(Icons.chevron_right),
+                    color: Colors.grey, // Changed to grey for better contrast
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 4),
 
               // Filter Tabs
               Row(
@@ -117,7 +120,7 @@ class _TransactionListPageState extends State<TransactionListPage> {
                 ],
               ),
               const SizedBox(height: 16),
-
+              
               // Summary Bar
               Consumer<TransactionProvider>(
                 builder: (context, transactionProvider, child) {
@@ -174,103 +177,209 @@ class _TransactionListPageState extends State<TransactionListPage> {
                         totalBalance = totalIncome - totalExpense;
                       }
 
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Container(
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                color: Colors.grey[100],
-                                borderRadius: BorderRadius.circular(12),
+                      // Format amounts for display
+                      String formatAmount(double amount) {
+                        return "Rp ${amount.toInt().toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}";
+                      }
+
+                      // Masked amounts
+                      String maskedAmount = "*****";
+
+                      // Format actual amounts
+                      String formattedTotalBalance = formatAmount(totalBalance);
+                      String formattedTotalIncome = formatAmount(totalIncome);
+                      String formattedTotalExpense = formatAmount(totalExpense);
+
+                      // Store visibility state
+                      bool _showAmounts = true;
+
+                      return StatefulBuilder(
+                        builder: (context, setState) {
+                          return Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [Colors.green, Colors.teal],
                               ),
-                              child: Column(
-                                children: [
-                                  Text(
-                                    "Rp ${totalBalance.toInt().toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: totalBalance >= 0 ? Colors.green : Colors.red,
-                                    ),
-                                  ),
-                                  Text(
-                                    "Total Balance",
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.grey[600],
-                                    ),
-                                  ),
-                                ],
-                              ),
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.1),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
                             ),
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Container(
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                color: Colors.grey[100],
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Column(
-                                children: [
-                                  Text(
-                                    "Rp ${totalIncome.toInt().toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}",
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.green,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    // Total Balance
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Total Balance",
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.white.withOpacity(0.7),
+                                          ),
+                                        ),
+                                        Text(
+                                          _showAmounts ? formattedTotalBalance : maskedAmount,
+                                          style: const TextStyle(
+                                            fontSize: 24,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ),
-                                  Text(
-                                    "Income",
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.grey[600],
+                                    // Eye icon button to toggle visibility
+                                    GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          _showAmounts = !_showAmounts;
+                                        });
+                                      },
+                                      child: Container(
+                                        width: 40,
+                                        height: 40,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white.withOpacity(0.2),
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                        child: Icon(
+                                          _showAmounts ? Icons.visibility : Icons.visibility_off,
+                                          color: Colors.white,
+                                          size: 20,
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
+                                  ],
+                                ),
+                                const SizedBox(height: 20),
+                                // Income and Expense cards
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    // Income card
+                                    Expanded(
+                                      child: Container(
+                                        padding: const EdgeInsets.all(16),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white.withOpacity(0.2),
+                                          borderRadius: BorderRadius.circular(12),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.black.withOpacity(0.05),
+                                              blurRadius: 8,
+                                              offset: const Offset(0, 2),
+                                            ),
+                                          ],
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              Icons.trending_up,
+                                              color: Colors.green.shade300,
+                                              size: 20,
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    "Income",
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                      color: Colors.white.withOpacity(0.8),
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    _showAmounts ? formattedTotalIncome : maskedAmount,
+                                                    style: const TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight: FontWeight.bold,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    // Expense card
+                                    Expanded(
+                                      child: Container(
+                                        padding: const EdgeInsets.all(16),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white.withOpacity(0.2),
+                                          borderRadius: BorderRadius.circular(12),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.black.withOpacity(0.05),
+                                              blurRadius: 8,
+                                              offset: const Offset(0, 2),
+                                            ),
+                                          ],
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              Icons.trending_down,
+                                              color: Colors.red.shade300,
+                                              size: 20,
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    "Expense",
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                      color: Colors.white.withOpacity(0.8),
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    _showAmounts ? formattedTotalExpense : maskedAmount,
+                                                    style: const TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight: FontWeight.bold,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Container(
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                color: Colors.grey[100],
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Column(
-                                children: [
-                                  Text(
-                                    "Rp ${totalExpense.toInt().toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}",
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.red,
-                                    ),
-                                  ),
-                                  Text(
-                                    "Expense",
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.grey[600],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
+                          );
+                        },
                       );
                     },
                   );
                 },
               ),
               const SizedBox(height: 24),
-
+              
               // Display transaction list based on actual data
               Consumer<TransactionProvider>(
                 builder: (context, transactionProvider, child) {
@@ -296,15 +405,15 @@ class _TransactionListPageState extends State<TransactionListPage> {
                                 Icon(
                                   Icons.receipt_long_outlined,
                                   size: 80,
-                                  color: Colors.grey[400],
+                                  color: const Color(0xFF0A7F66), // Emerald Deep Green
                                 ),
                                 const SizedBox(height: 24),
-                                const Text(
+                                Text(
                                   'No transactions yet',
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.w500,
-                                    color: Colors.grey,
+                                    color: const Color(0xFF0A7F66), // Emerald Deep Green
                                   ),
                                 ),
                                 const SizedBox(height: 8),
@@ -312,7 +421,7 @@ class _TransactionListPageState extends State<TransactionListPage> {
                                   'Start tracking your expenses and income',
                                   style: TextStyle(
                                     fontSize: 14,
-                                    color: Colors.grey[600],
+                                    color: const Color(0xFF0A7F66), // Emerald Deep Green
                                   ),
                                   textAlign: TextAlign.center,
                                 ),
@@ -335,15 +444,15 @@ class _TransactionListPageState extends State<TransactionListPage> {
                                 Icon(
                                   Icons.receipt_long_outlined,
                                   size: 80,
-                                  color: Colors.grey[400],
+                                  color: const Color(0xFF0A7F66), // Emerald Deep Green
                                 ),
                                 const SizedBox(height: 24),
-                                const Text(
+                                Text(
                                   'No transactions yet',
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.w500,
-                                    color: Colors.grey,
+                                    color: const Color(0xFF0A7F66), // Emerald Deep Green
                                   ),
                                 ),
                                 const SizedBox(height: 8),
@@ -351,7 +460,7 @@ class _TransactionListPageState extends State<TransactionListPage> {
                                   'Start tracking your expenses and income',
                                   style: TextStyle(
                                     fontSize: 14,
-                                    color: Colors.grey[600],
+                                    color: const Color(0xFF0A7F66), // Emerald Deep Green
                                   ),
                                   textAlign: TextAlign.center,
                                 ),
@@ -362,6 +471,7 @@ class _TransactionListPageState extends State<TransactionListPage> {
                       } else if (transactions.isNotEmpty) {
                         // Group transactions by date
                         Map<String, List<TransactionModel>> groupedTransactions = {};
+                        
                         for (var transaction in transactions) {
                           String dateKey = '${transaction.date.day}/${transaction.date.month}/${transaction.date.year}';
                           if (!groupedTransactions.containsKey(dateKey)) {
@@ -371,10 +481,14 @@ class _TransactionListPageState extends State<TransactionListPage> {
                         }
 
                         List<Widget> dateSections = [];
+                        
                         groupedTransactions.forEach((dateString, transactions) {
                           double totalAmountValue = transactions.fold(0, (sum, transaction) => sum + transaction.amount);
-                          String totalAmount = totalAmountValue.toInt().toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},');
-
+                          String totalAmount = totalAmountValue.toInt().toString().replaceAllMapped(
+                            RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+                            (Match m) => '${m[1]},'
+                          );
+                          
                           dateSections.add(
                             _buildDateSection(
                               _formatDate(transactions.first.date),
@@ -384,7 +498,10 @@ class _TransactionListPageState extends State<TransactionListPage> {
                                 categoryTitle: transaction.categoryId,
                                 description: transaction.note,
                                 paymentMethod: 'Cash', // Could be dynamic from transaction data
-                                amount: '${transaction.type == 'income' ? '+' : '-'}Rp ${transaction.amount.toInt().toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
+                                amount: '${transaction.type == 'income' ? '+' : '-'}Rp ${transaction.amount.toInt().toString().replaceAllMapped(
+                                  RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+                                  (Match m) => '${m[1]},'
+                                )}',
                                 transaction: transaction,
                               )).toList(),
                             ),
@@ -405,15 +522,15 @@ class _TransactionListPageState extends State<TransactionListPage> {
                               Icon(
                                 Icons.receipt_long_outlined,
                                 size: 80,
-                                color: Colors.grey[400],
+                                color: const Color(0xFF0A7F66), // Emerald Deep Green
                               ),
                               const SizedBox(height: 24),
-                              const Text(
+                              Text(
                                 'No transactions yet',
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w500,
-                                  color: Colors.grey,
+                                  color: const Color(0xFF0A7F66), // Emerald Deep Green
                                 ),
                               ),
                               const SizedBox(height: 8),
@@ -421,7 +538,7 @@ class _TransactionListPageState extends State<TransactionListPage> {
                                 'Start tracking your expenses and income',
                                 style: TextStyle(
                                   fontSize: 14,
-                                  color: Colors.grey[600],
+                                  color: const Color(0xFF0A7F66), // Emerald Deep Green
                                 ),
                                 textAlign: TextAlign.center,
                               ),
@@ -437,14 +554,36 @@ class _TransactionListPageState extends State<TransactionListPage> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          context.push('/transactions/add');
-        },
-        backgroundColor: Colors.green,
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
+      floatingActionButton: Container(
+        width: 56,
+        height: 56,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.green, Colors.teal],
+          ),
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              offset: Offset(0, 4),
+              blurRadius: 8,
+            ),
+          ],
+        ),
+        child: FloatingActionButton(
+          onPressed: () {
+            context.push('/transactions/add');
+          },
+          backgroundColor: Colors.transparent,
+          heroTag: "add_transaction_fab",
+          elevation: 0,
+          highlightElevation: 0,
+          focusElevation: 0,
+          disabledElevation: 0,
+          child: const Icon(
+            Icons.add,
+            color: Colors.white,
+          ),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
@@ -460,16 +599,23 @@ class _TransactionListPageState extends State<TransactionListPage> {
           });
         },
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: const EdgeInsets.symmetric(vertical: 8),
           decoration: BoxDecoration(
-            color: isActive ? Colors.green : Colors.grey[300],
+            color: isActive ? null : Colors.grey[200], // Keep unselected grey
+            gradient: isActive
+              ? const LinearGradient(
+                  colors: [Colors.green, Colors.teal], // Match Total Balance card gradient
+                )
+              : null,
             borderRadius: BorderRadius.circular(20),
           ),
           child: Center(
             child: Text(
               title,
               style: TextStyle(
-                color: isActive ? Colors.white : Colors.black,
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: isActive ? Colors.white : Colors.grey[700], // White text for selected
               ),
             ),
           ),
@@ -540,10 +686,8 @@ class _TransactionItem extends StatelessWidget {
       onDismissed: (direction) async {
         final transactionProvider = context.read<TransactionProvider>();
         final budgetProvider = context.read<BudgetProvider>();
-
         await transactionProvider.deleteTransaction(transaction.id);
         await budgetProvider.updateSpending(); // Update budget after deleting transaction
-
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Transaction deleted')),

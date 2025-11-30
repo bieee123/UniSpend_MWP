@@ -92,13 +92,13 @@ class UniSpendBottomNavBar extends StatelessWidget {
             children: [
               Icon(
                 icon,
-                color: currentIndex == index ? Theme.of(context).primaryColor : Colors.grey,
+                color: currentIndex == index ? const Color(0xFF076C72) : Colors.grey, // Teal Forest for active
               ),
               Text(
                 label,
                 style: TextStyle(
                   fontSize: 10,
-                  color: currentIndex == index ? Theme.of(context).primaryColor : Colors.grey,
+                  color: currentIndex == index ? const Color(0xFF076C72) : Colors.grey, // Teal Forest for active
                 ),
               ),
             ],

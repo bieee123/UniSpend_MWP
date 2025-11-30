@@ -29,8 +29,8 @@ class _MainLayoutState extends State<MainLayout> {
       appBar: widget.showBackButton
           ? AppBar(
               title: Text(widget.title),
-              // Make sure to use the theme's primary color for consistency
-              backgroundColor: Theme.of(context).primaryColor,
+              // Changed to Emerald Deep Green
+              backgroundColor: const Color(0xFF0A7F66), // Emerald Deep Green
               foregroundColor: Colors.white,
             )
           : AppBar(
@@ -42,8 +42,8 @@ class _MainLayoutState extends State<MainLayout> {
                   Navigator.pop(context);
                 },
               ),
-              // Make sure to use the theme's primary color for consistency
-              backgroundColor: Theme.of(context).primaryColor,
+              // Changed to Emerald Deep Green
+              backgroundColor: const Color(0xFF0A7F66), // Emerald Deep Green
               foregroundColor: Colors.white,
             ),
       body: SafeArea(

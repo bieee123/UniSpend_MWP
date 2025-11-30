@@ -21,13 +21,17 @@ class _CalendarPageState extends State<CalendarPage> {
     return Scaffold(
       body: Column(
         children: [
-          // Toggle button untuk memperbaiki bug format yang tidak sesuai
+          // Toggle button with modern styling
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            padding: const EdgeInsets.all(4),
+            padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
-              color: Colors.grey[200],
+              color: const Color(0xFF0A7F66).withOpacity(0.1), // Light Emerald Deep Green background
               borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: const Color(0xFF0A7F66).withOpacity(0.3), // Subtle Emerald Deep Green border
+                width: 1,
+              ),
             ),
             child: Row(
               children: [
@@ -55,12 +59,14 @@ class _CalendarPageState extends State<CalendarPage> {
             eventLoader: _getEventsForDay,
             calendarStyle: CalendarStyle(
               selectedDecoration: const BoxDecoration(
-                color: Colors.blue,
+                color: Color(0xFF0A7F66), // Emerald Deep Green
                 shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.all(Radius.circular(8)),
               ),
               todayDecoration: BoxDecoration(
-                color: Colors.blue[100],
+                color: const Color(0xFF0A7F66).withOpacity(0.2), // Light Emerald Deep Green
                 shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.all(Radius.circular(8)),
               ),
               markersMaxCount: 3, // Show up to 3 dots for multiple transactions
             ),
@@ -90,7 +96,12 @@ class _CalendarPageState extends State<CalendarPage> {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 8),
           decoration: BoxDecoration(
-            color: isSelected ? Colors.green : Colors.transparent,
+            color: isSelected ? null : Colors.grey[200], // Keep unselected grey
+            gradient: isSelected
+              ? const LinearGradient(
+                  colors: [Colors.green, Colors.teal], // Match transaction page gradient
+                )
+              : null,
             borderRadius: BorderRadius.circular(20),
           ),
           child: Center(
@@ -99,7 +110,7 @@ class _CalendarPageState extends State<CalendarPage> {
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
-                color: isSelected ? Colors.white : Colors.grey[700],
+                color: isSelected ? Colors.white : Colors.grey[700], // White text for selected
               ),
             ),
           ),
@@ -151,15 +162,15 @@ class _CalendarPageState extends State<CalendarPage> {
                   Icon(
                     Icons.receipt_long_outlined,
                     size: 60,
-                    color: Colors.grey[400],
+                    color: const Color(0xFF0A7F66), // Emerald Deep Green
                   ),
                   const SizedBox(height: 16),
-                  const Text(
+                  Text(
                     'No transactions for this day',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
-                      color: Colors.grey,
+                      color: const Color(0xFF0A7F66), // Emerald Deep Green
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -167,7 +178,7 @@ class _CalendarPageState extends State<CalendarPage> {
                     'Tap on a date with transactions to view details',
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.grey[600],
+                      color: const Color(0xFF0A7F66), // Emerald Deep Green
                     ),
                     textAlign: TextAlign.center,
                   ),
