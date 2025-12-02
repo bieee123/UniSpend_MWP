@@ -11,9 +11,6 @@ import '../feature/transactions/add_transaction_page.dart';
 import '../feature/transactions/transaction_list_page.dart';
 import '../feature/transactions/edit_transaction_page.dart';
 import '../feature/settings/settings_page.dart';
-import '../feature/categories/category_list_page.dart';
-import '../feature/categories/add_category_page.dart';
-import '../feature/categories/edit_category_page.dart';
 import '../feature/pin/set_pin_page.dart';
 import '../feature/pin/verify_pin_page.dart';
 import '../feature/settings/add_budget_page.dart';
@@ -88,24 +85,6 @@ final GoRouter router = GoRouter(
         currentIndex: 1, // Budgets page is now at index 1 (transactions=0, budgets=1, analytics=2, settings=3)
         title: 'Budgets',
         child: const BudgetLimitPage(), // Using budget limit page as the budgets page
-      ),
-    ),
-    GoRoute(
-      path: '/categories/add',
-      name: 'add_category',
-      builder: (context, state) => MainLayout(
-        currentIndex: 1, // Budgets page index (transactions=0, budgets=1, analytics=2, settings=3)
-        title: 'Add Category',
-        child: const AddCategoryPage(),
-      ),
-    ),
-    GoRoute(
-      path: '/categories/edit/:id',
-      name: 'edit_category',
-      builder: (context, state) => MainLayout(
-        currentIndex: 1, // Budgets page index (transactions=0, budgets=1, analytics=2, settings=3)
-        title: 'Edit Category',
-        child: EditCategoryPage(categoryId: state.pathParameters['id']!),
       ),
     ),
     GoRoute(

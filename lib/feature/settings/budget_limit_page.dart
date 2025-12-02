@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/widgets/budget_card.dart';
+import '../../core/widgets/swipeable_budget_card.dart';
 import '../../state/budget_provider.dart';
 import '../../data/models/budget_model.dart';
 
@@ -168,7 +169,7 @@ class _BudgetLimitPageState extends State<BudgetLimitPage> {
     IconData categoryIcon = _getCategoryIcon(budget.category);
     Color categoryColor = _getCategoryColor(budget.category);
 
-    return BudgetCard(
+    return SwipeableBudgetCard(
       categoryName: budget.name,
       categoryIcon: categoryIcon,
       remainingAmount: remainingAmount.replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},'),
@@ -177,6 +178,7 @@ class _BudgetLimitPageState extends State<BudgetLimitPage> {
       startDate: "${budget.startDate.day} ${_getMonthName(budget.startDate.month)} ${budget.startDate.year}",
       endDate: "${budget.endDate.day} ${_getMonthName(budget.endDate.month)} ${budget.endDate.year}",
       progress: progress,
+      budget: budget,
     );
   }
 

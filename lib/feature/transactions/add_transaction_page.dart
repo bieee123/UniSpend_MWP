@@ -424,11 +424,17 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
             ),
           ),
         ),
-        // Add an Amount Button at the bottom
+        // Add an Amount Button - Match Budget Page Style
         Container(
           width: double.infinity,
           height: 50,
-          margin: const EdgeInsets.all(20), // Add padding to match the content padding
+          margin: const EdgeInsets.all(20),
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF0A7F66), Color(0xFF076C72)], // Emerald Deep Green to Teal Forest gradient
+            ),
+            borderRadius: BorderRadius.all(Radius.circular(12)),
+          ),
           child: ElevatedButton(
             onPressed: () async {
               // Validate all required fields before creating transaction
@@ -517,22 +523,13 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
-            child: Container(
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Color(0xFF0A7F66), Color(0xFF076C72)], // Emerald Deep Green to Teal Forest gradient
-                ),
-                borderRadius: BorderRadius.all(Radius.circular(12)),
-              ),
-              child: const Center(
-                child: Text(
-                  "Add an Amount",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
+            child: const Center(
+              child: Text(
+                "Add an Amount",
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
                 ),
               ),
             ),
