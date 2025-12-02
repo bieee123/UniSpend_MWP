@@ -290,7 +290,7 @@ class IncomeCard extends StatelessWidget {
   }
 }
 
-class PieChartPlaceholder extends StatelessWidget {
+class PieChartPlaceholder extends StatefulWidget {
   final bool isExpenses;
   final Map<String, double>? expenseByCategory;
   final Map<String, double>? incomeByCategory;
@@ -303,25 +303,36 @@ class PieChartPlaceholder extends StatelessWidget {
   });
 
   @override
+  State<PieChartPlaceholder> createState() => _PieChartPlaceholderState();
+}
+
+class _PieChartPlaceholderState extends State<PieChartPlaceholder> {
+  int touchedIndex = -1;
+
+  @override
   Widget build(BuildContext context) {
-    final dataMap = isExpenses ? expenseByCategory : incomeByCategory;
+    final dataMap = widget.isExpenses ? widget.expenseByCategory : widget.incomeByCategory;
 
     if (dataMap == null || dataMap.isEmpty) {
       return Container(
-        width: 120,
-        height: 120,
+        width: 160,
+        height: 160,
         decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: Border.all(
-            color: Colors.grey.withOpacity(0.3),
-            width: 1,
-          ),
+          color: Colors.grey[100],
+          borderRadius: BorderRadius.circular(22),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.15),
+              blurRadius: 25,
+              offset: const Offset(0, 4),
+            ),
+          ],
         ),
         child: const Center(
           child: Text(
             "No Data",
             style: TextStyle(
-              fontSize: 12,
+              fontSize: 14,
               color: Colors.grey,
               fontWeight: FontWeight.w500,
             ),
@@ -344,28 +355,87 @@ class PieChartPlaceholder extends StatelessWidget {
           color: _getCategoryColor(key),
           value: value,
           title: '${percentage.round()}%',
-          radius: 15,
+          radius: 50,
           titleStyle: const TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
-            fontSize: 10,
+            fontSize: 12,
+          ),
+          borderSide: const BorderSide(
+            color: Colors.white,
+            width: 1,
           ),
         ),
       );
     }
 
-    return SizedBox(
-      width: 120,
-      height: 120,
-      child: PieChart(
-        PieChartData(
-          sections: sections,
-          centerSpaceRadius: 0,
-          sectionsSpace: 0,
-          pieTouchData: PieTouchData(
-            touchCallback: (FlTouchEvent event, pieTouchResponse) {},
+    return Container(
+      width: 160,
+      height: 160,
+      child: Stack(
+        children: [
+          PieChart(
+            PieChartData(
+              sections: sections
+                  .asMap()
+                  .map<int, PieChartSectionData>((index, data) {
+                    return MapEntry(
+                      index,
+                      data.copyWith(
+                        color: touchedIndex == index
+                            ? data.color.withOpacity(0.8)
+                            : data.color,
+                        radius: touchedIndex == index ? 38 : 33, // Reduced further to maintain proper proportion with larger center hole
+                        titleStyle: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: touchedIndex == index ? 11 : 9, // Reduced font size
+                        ),
+                      ),
+                    );
+                  })
+                  .values
+                  .toList(),
+              centerSpaceRadius: 55, // Increased from 50 to 55 to provide adequate space for larger center icon
+              sectionsSpace: 3, // Gap between slices
+              pieTouchData: PieTouchData(
+                touchCallback: (FlTouchEvent event, pieTouchResponse) {
+                  setState(() {
+                    if (pieTouchResponse?.touchedSection != null) {
+                      touchedIndex = pieTouchResponse!.touchedSection!.touchedSectionIndex;
+                    } else {
+                      touchedIndex = -1;
+                    }
+                  });
+                },
+              ),
+              borderData: FlBorderData(
+                show: false,
+              ),
+            ),
           ),
-        ),
+          // Position icon exactly at the center using absolute positioning
+          Positioned(
+            left: 80, // Center of width: 160/2
+            top: 80,  // Center of height: 160/2
+            child: Transform.translate(
+              offset: const Offset(-18, -18), // Half of new icon size to center it: 36/2 = 18
+              child: Container(
+                width: 36, // Increased width to 36px for larger icon
+                height: 36, // Increased height to 36px for larger icon
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.8), // Slightly visible background to separate from chart
+                  borderRadius: BorderRadius.circular(18), // Circular background matching new size
+                ),
+                child: Icon(
+                  widget.isExpenses ? Icons.account_balance : Icons.monetization_on,
+                  size: 28, // Increased icon size to 28px for better visibility
+                  color: const Color(0xFF1a1a1a), // Neutral dark color as requested
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

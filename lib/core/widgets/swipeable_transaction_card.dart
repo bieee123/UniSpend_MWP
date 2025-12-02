@@ -44,8 +44,10 @@ class SwipeableTransactionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dismissible(
-      key: Key('transaction_${transaction.id}'), // Unique key for each transaction
-      direction: DismissDirection.endToStart, // Only allow swipe from right to left
+      key: Key(
+          'transaction_${transaction.id}'), // Unique key for each transaction
+      direction:
+          DismissDirection.endToStart, // Only allow swipe from right to left
       confirmDismiss: (direction) async {
         // Show confirmation dialog before deleting
         return await _showDeleteConfirmationDialog(context);
@@ -56,14 +58,16 @@ class SwipeableTransactionCard extends StatelessWidget {
         final budgetProvider = context.read<BudgetProvider>();
 
         await transactionProvider.deleteTransaction(transaction.id);
-        await budgetProvider.updateSpending(); // Update budget after deleting transaction
+        await budgetProvider
+            .updateSpending(); // Update budget after deleting transaction
       },
       background: Container(
         padding: const EdgeInsets.only(right: 20),
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
         decoration: BoxDecoration(
           color: Colors.red,
-          borderRadius: BorderRadius.circular(16), // Match the card's border radius
+          borderRadius:
+              BorderRadius.circular(16), // Match the card's border radius
         ),
         alignment: Alignment.centerRight,
         child: const Row(
@@ -79,7 +83,9 @@ class SwipeableTransactionCard extends StatelessWidget {
         ),
       ),
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4), // Consistent margins
+        margin: const EdgeInsets.symmetric(
+            horizontal: 10,
+            vertical: 4), // Reduced horizontal margin to make card wider
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(16), // Increased border radius
@@ -93,94 +99,91 @@ class SwipeableTransactionCard extends StatelessWidget {
           ],
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0), // Add vertical padding
+          padding: const EdgeInsets.symmetric(
+              vertical: 10.0,
+              horizontal:
+                  10.0), // Reduced horizontal padding to make card wider
           child: Row(
             children: [
               Container(
-                width: 52,
-                height: 52,
-                margin: const EdgeInsets.only(left: 12),
+                width: 56,
+                height: 56,
                 decoration: BoxDecoration(
-                  color: categoryIconColor.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(26),
+                  color: categoryIconColor.withOpacity(
+                      0.1), // Lighter background for better icon contrast
+                  borderRadius: BorderRadius.circular(28),
                   border: Border.all(
-                    color: categoryIconColor,
-                    width: 1.5,
+                    color: categoryIconColor
+                        .withOpacity(0.3), // Slightly transparent border
+                    width: 1,
                   ),
                 ),
                 child: Icon(
                   _getCategoryIcon(categoryTitle),
                   color: categoryIconColor,
-                  size: 22,
+                  size: 24, // Larger icon for better visibility
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      categoryTitle,
+                      style: const TextStyle(
+                        fontWeight: FontWeight
+                            .w700, // Increased weight for better hierarchy
+                        fontSize: 16, // Larger font for better readability
+                        color: Color(
+                            0xFF333333), // Darker color for better contrast
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      description,
+                      style: TextStyle(
+                        fontSize: 14, // Slightly larger for readability
+                        color: Colors
+                            .grey[700], // Darker gray for better visibility
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.account_balance_wallet_outlined,
+                          size: 14,
+                          color: Colors.grey[500],
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          paymentMethod,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey[500],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(width: 12),
-              Expanded(
-                flex: 3,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        categoryTitle,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 15,
-                          color: Color(0xFF333333),
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        description,
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: Colors.grey[700],
-                          height: 1.2,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 2),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.account_balance_wallet_outlined,
-                            size: 12,
-                            color: Colors.grey[600],
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            paymentMethod,
-                            style: TextStyle(
-                              fontSize: 11,
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Expanded(
-                flex: 1,
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 12.0),
-                  child: Text(
-                    amount,
-                    textAlign: TextAlign.right,
-                    style: TextStyle(
-                      color: transaction.type == 'income' 
-                          ? Colors.green[700] 
-                          : Colors.red[700],
-                      fontWeight: FontWeight.w700,
-                      fontSize: 16,
-                    ),
-                  ),
+              Text(
+                amount,
+                textAlign: TextAlign.right,
+                style: TextStyle(
+                  color: transaction.type == 'income'
+                      ? const Color(0xFF2ECC71) // Stronger green for income
+                      : const Color(0xFFD9534F), // Stronger red for expense
+                  fontWeight: FontWeight.w800, // Bolder for emphasis
+                  fontSize: 18, // Larger font size for dominance
                 ),
               ),
             ],
@@ -193,32 +196,35 @@ class SwipeableTransactionCard extends StatelessWidget {
   // Show confirmation dialog before deleting
   Future<bool> _showDeleteConfirmationDialog(BuildContext context) async {
     return await showDialog<bool>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Delete Transaction?"),
-          content: const Text("Are you sure you want to delete this transaction?"),
-          actions: [
-            TextButton(
-              onPressed: () {
-                // Close dialog with false result (cancel deletion)
-                Navigator.of(context).pop(false);
-              },
-              child: const Text("Cancel"),
-            ),
-            TextButton(
-              onPressed: () {
-                // Close dialog with true result (confirm deletion)
-                Navigator.of(context).pop(true);
-              },
-              style: TextButton.styleFrom(
-                foregroundColor: Colors.red[700], // Red text for delete button
-              ),
-              child: const Text("Delete"),
-            ),
-          ],
-        );
-      },
-    ) ?? false; // Return false if dialog is dismissed without making a choice
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text("Delete Transaction?"),
+              content: const Text(
+                  "Are you sure you want to delete this transaction?"),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    // Close dialog with false result (cancel deletion)
+                    Navigator.of(context).pop(false);
+                  },
+                  child: const Text("Cancel"),
+                ),
+                TextButton(
+                  onPressed: () {
+                    // Close dialog with true result (confirm deletion)
+                    Navigator.of(context).pop(true);
+                  },
+                  style: TextButton.styleFrom(
+                    foregroundColor:
+                        Colors.red[700], // Red text for delete button
+                  ),
+                  child: const Text("Delete"),
+                ),
+              ],
+            );
+          },
+        ) ??
+        false; // Return false if dialog is dismissed without making a choice
   }
 }

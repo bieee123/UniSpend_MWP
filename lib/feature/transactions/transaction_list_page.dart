@@ -278,60 +278,10 @@ class _TransactionListPageState extends State<TransactionListPage> {
                                     ],
                                   ),
                                   const SizedBox(height: 20),
-                                  // Income and Expense cards
+                                  // Expense and Income cards (swapped positions - Expense on left, Income on right)
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      // Income card
-                                      Expanded(
-                                        child: Container(
-                                          padding: const EdgeInsets.all(16),
-                                          decoration: BoxDecoration(
-                                            color: Colors.white.withOpacity(0.2),
-                                            borderRadius: BorderRadius.circular(12),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Colors.black.withOpacity(0.05),
-                                                blurRadius: 8,
-                                                offset: const Offset(0, 2),
-                                              ),
-                                            ],
-                                          ),
-                                          child: Row(
-                                            children: [
-                                              Icon(
-                                                Icons.trending_up,
-                                                color: Colors.green.shade300,
-                                                size: 20,
-                                              ),
-                                              const SizedBox(width: 8),
-                                              Expanded(
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      "Income",
-                                                      style: TextStyle(
-                                                        fontSize: 14,
-                                                        color: Colors.white.withOpacity(0.8),
-                                                      ),
-                                                    ),
-                                                    Text(
-                                                      _showAmounts ? formattedTotalIncome : maskedAmount,
-                                                      style: const TextStyle(
-                                                        fontSize: 16,
-                                                        fontWeight: FontWeight.bold,
-                                                        color: Colors.white,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(width: 12),
                                       // Expense card
                                       Expanded(
                                         child: Container(
@@ -368,6 +318,56 @@ class _TransactionListPageState extends State<TransactionListPage> {
                                                     ),
                                                     Text(
                                                       _showAmounts ? formattedTotalExpense : maskedAmount,
+                                                      style: const TextStyle(
+                                                        fontSize: 16,
+                                                        fontWeight: FontWeight.bold,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      // Income card
+                                      Expanded(
+                                        child: Container(
+                                          padding: const EdgeInsets.all(16),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white.withOpacity(0.2),
+                                            borderRadius: BorderRadius.circular(12),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.black.withOpacity(0.05),
+                                                blurRadius: 8,
+                                                offset: const Offset(0, 2),
+                                              ),
+                                            ],
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                Icons.trending_up,
+                                                color: Colors.green.shade300,
+                                                size: 20,
+                                              ),
+                                              const SizedBox(width: 8),
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      "Income",
+                                                      style: TextStyle(
+                                                        fontSize: 14,
+                                                        color: Colors.white.withOpacity(0.8),
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      _showAmounts ? formattedTotalIncome : maskedAmount,
                                                       style: const TextStyle(
                                                         fontSize: 16,
                                                         fontWeight: FontWeight.bold,
