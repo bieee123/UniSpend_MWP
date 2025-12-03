@@ -21,6 +21,19 @@ class BudgetProvider extends ChangeNotifier {
   double get remainingBudget => _globalBudgetLimit - _currentSpending;
   double get budgetPercentage => _globalBudgetLimit > 0 ? (_currentSpending / _globalBudgetLimit) * 100 : 0;
 
+  // New properties for budget overview card
+  double get totalAllocatedBudget {
+    return _budgets.fold(0.0, (sum, budget) => sum + budget.limit);
+  }
+
+  double get totalSpentBudget {
+    return _budgets.fold(0.0, (sum, budget) => sum + budget.spent);
+  }
+
+  double get remainingOverallBudget {
+    return totalAllocatedBudget - totalSpentBudget;
+  }
+
   BudgetProvider() {
     _currentUserId = FirebaseAuth.instance.currentUser?.uid;
 

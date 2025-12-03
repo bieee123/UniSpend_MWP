@@ -426,9 +426,9 @@ class _TransactionListPageState extends State<TransactionListPage> {
                                 Text(
                                   'No transactions yet',
                                   style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w500,
-                                    color: const Color(0xFF0A7F66), // Emerald Deep Green
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w600,
+                                    color: const Color(0xFF0A7F66), // Emerald Deep Green (same as budgets page)
                                   ),
                                 ),
                                 const SizedBox(height: 8),
@@ -465,9 +465,9 @@ class _TransactionListPageState extends State<TransactionListPage> {
                                 Text(
                                   'No transactions yet',
                                   style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w500,
-                                    color: const Color(0xFF0A7F66), // Emerald Deep Green
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w600,
+                                    color: const Color(0xFF0A7F66), // Emerald Deep Green (same as budgets page)
                                   ),
                                 ),
                                 const SizedBox(height: 8),

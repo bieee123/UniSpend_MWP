@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/widgets/budget_card.dart';
 import '../../core/widgets/swipeable_budget_card.dart';
+import '../../core/widgets/atmospheric_budget_donut.dart';
 import '../../state/budget_provider.dart';
 import '../../data/models/budget_model.dart';
 
@@ -33,76 +34,204 @@ class _BudgetLimitPageState extends State<BudgetLimitPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 12),
 
-                    // Budget list
-                    if (budgets.isEmpty)
-                      // Enhanced placeholder for empty budget list - centered
-                      Container(
-                        margin: const EdgeInsets.only(top: 100, bottom: 100), // Increased margins to position content lower
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              width: 120,
-                              height: 120,
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFE8F5E9), // Light green background
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: const Color(0xFF0A7F66).withOpacity(0.2), // Light border
-                                  width: 2,
+                    // Budget Chart Visualization (always visible)
+                    Container(
+                      width: double.infinity,
+                      margin: const EdgeInsets.only(bottom: 16),
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[50], // Light background
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.08),
+                            blurRadius: 12,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                        border: Border.all(
+                          color: const Color(0xFF0A7F66).withOpacity(0.3), // Emerald Deep Green border
+                          width: 1,
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Title Section
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Budget Allocation Overview',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
+                                  color: const Color(0xFF0A7F66), // Emerald Deep Green
                                 ),
                               ),
-                              child: Icon(
-                                Icons.account_balance_wallet_outlined,
-                                size: 50,
-                                color: const Color(0xFF0A7F66), // Emerald Deep Green
+                              const SizedBox(height: 4),
+                              Text(
+                                'Your budget usage across all categories',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.grey[600],
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 16), // Increased gap from 12 to 16
+
+                          // Donut Chart Centered (or No Data placeholder)
+                          if (budgets.isNotEmpty)
+                            Center(
+                              child: SizedBox(
+                                height: 200, // Increased height from 160 to 200
+                                child: AtmosphericBudgetDonut(
+                                  budgets: budgets.map((budget) =>
+                                    BudgetData(
+                                      category: budget.category,
+                                      limit: budget.limit,
+                                      spent: budget.spent,
+                                    )
+                                  ).toList(),
+                                ),
+                              ),
+                            )
+                          else
+                            Center(
+                              child: Container(
+                                width: 100,
+                                height: 100,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[200],
+                                  shape: BoxShape.circle,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.4),
+                                      blurRadius: 12,
+                                      offset: const Offset(0, 4),
+                                    ),
+                                  ],
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    'No Data',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.grey[600],
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
-                            const SizedBox(height: 24),
-                            Text(
-                              'Start Managing Your Budget',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600,
-                                color: const Color(0xFF0A7F66), // Emerald Deep Green
-                              ),
+
+                          const SizedBox(height: 12),
+
+                          // Mini Summary Section (show regardless, but with "No Data" when no budgets)
+                          Container(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                if (budgets.isNotEmpty)
+                                  _buildSummaryItem(
+                                    'Allocated',
+                                    _formatCurrency(budgetProvider.totalAllocatedBudget),
+                                    const Color(0xFF0A7F66), // Emerald Deep Green
+                                  )
+                                else
+                                  _buildSummaryItem(
+                                    'Allocated',
+                                    'No Data',
+                                    Colors.grey,
+                                  ),
+                                if (budgets.isNotEmpty)
+                                  _buildSummaryItem(
+                                    'Used',
+                                    _formatCurrency(budgetProvider.totalSpentBudget),
+                                    Colors.orange,
+                                  )
+                                else
+                                  _buildSummaryItem(
+                                    'Used',
+                                    'No Data',
+                                    Colors.grey,
+                                  ),
+                                if (budgets.isNotEmpty)
+                                  _buildSummaryItem(
+                                    'Remaining',
+                                    _formatCurrency(budgetProvider.remainingOverallBudget),
+                                    Colors.green,
+                                  )
+                                else
+                                  _buildSummaryItem(
+                                    'Remaining',
+                                    'No Data',
+                                    Colors.grey,
+                                  ),
+                              ],
                             ),
-                            const SizedBox(height: 8),
-                            Text(
-                              'Set spending limits to track and control your expenses',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey[600],
+                          ),
+
+                          const SizedBox(height: 16),
+
+                          // Progress Bar (only if there are budgets)
+                          if (budgets.isNotEmpty)
+                            _buildOverallBudgetProgress(budgetProvider),
+                        ],
+                      ),
+                    ),
+
+                    // Placeholder when no budgets - Display below the chart card
+                    if (budgets.isEmpty)
+                      Center(
+                        child: Container(
+                          margin: const EdgeInsets.only(top: 40, bottom: 60), // Increased top and bottom margins to center it
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Container(
+                                width: 120,
+                                height: 120,
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFE8F5E9), // Light green background
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: const Color(0xFF0A7F66).withOpacity(0.2), // Light border
+                                    width: 2,
+                                  ),
+                                ),
+                                child: Icon(
+                                  Icons.account_balance_wallet_outlined,
+                                  size: 50,
+                                  color: const Color(0xFF0A7F66), // Emerald Deep Green
+                                ),
                               ),
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: 24),
-                            Container(
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                color: Colors.grey[100],
-                                borderRadius: BorderRadius.circular(12),
+                              const SizedBox(height: 24),
+                              Text(
+                                'No Budgets Yet',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w600,
+                                  color: const Color(0xFF0A7F66), // Emerald Deep Green
+                                ),
                               ),
-                              child: Column(
-                                children: [
-                                  _buildBenefitItem("Track spending", Icons.show_chart),
-                                  _buildBenefitItem("Set limits", Icons.monetization_on),
-                                  _buildBenefitItem("Stay organized", Icons.check_circle),
-                                ],
+                              const SizedBox(height: 8),
+                              Text(
+                                'Add your first budget to get started',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: const Color(0xFF0A7F66), // Match transaction page color
+                                  fontWeight: FontWeight.w600, // Bold like other pages
+                                ),
+                                textAlign: TextAlign.center,
                               ),
-                            ),
-                            const SizedBox(height: 24),
-                            Text(
-                              'Create your first budget to start tracking limits',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: const Color(0xFF0A7F66), // Emerald Deep Green
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       )
                     else
@@ -245,5 +374,65 @@ class _BudgetLimitPageState extends State<BudgetLimitPage> {
       'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
     ];
     return months[month - 1];
+  }
+
+  String _formatCurrency(double amount) {
+    return 'Rp ${amount.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}';
+  }
+
+  Widget _buildSummaryItem(String label, String value, Color color) {
+    return Column(
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 12,
+            color: Colors.grey[600],
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            color: color,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildOverallBudgetProgress(BudgetProvider budgetProvider) {
+    final double totalAllocated = budgetProvider.totalAllocatedBudget;
+    final double totalSpent = budgetProvider.totalSpentBudget;
+    final double progress = totalAllocated > 0 ? totalSpent / totalAllocated : 0;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Overall Budget Usage: ${(progress * 100).toStringAsFixed(1)}%',
+          style: TextStyle(
+            fontSize: 12,
+            color: Colors.grey[600],
+          ),
+        ),
+        const SizedBox(height: 8),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: LinearProgressIndicator(
+            value: progress > 1 ? 1 : progress, // Cap at 1 to prevent overflow
+            minHeight: 8,
+            backgroundColor: Colors.grey[200],
+            valueColor: AlwaysStoppedAnimation<Color>(
+              totalSpent > totalAllocated
+                ? Colors.red
+                : const Color(0xFF0A7F66), // Emerald Deep Green
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }
