@@ -15,6 +15,7 @@ import '../feature/pin/set_pin_page.dart';
 import '../feature/pin/verify_pin_page.dart';
 import '../feature/settings/add_budget_page.dart';
 import '../feature/settings/budget_limit_page.dart';
+import '../feature/settings/edit_budget_page.dart';
 import '../feature/settings/export_page.dart';
 import '../feature/settings/notification_settings_page.dart';
 import '../feature/calendar/calendar_page.dart';
@@ -75,6 +76,8 @@ final GoRouter router = GoRouter(
       builder: (context, state) => MainLayout(
         currentIndex: 0, // Transactions page index (transactions=0, budgets=1, analytics=2, settings=3)
         title: 'Edit Transaction',
+        showBottomNavBar: false,
+        showBackButton: false,
         child: EditTransactionPage(transactionId: state.pathParameters['id']!),
       ),
     ),
@@ -167,6 +170,17 @@ final GoRouter router = GoRouter(
         showBottomNavBar: false,
         showBackButton: false,
         child: const AddBudgetPage(),
+      ),
+    ),
+    GoRoute(
+      path: '/budgets/edit/:id',
+      name: 'edit_budget',
+      builder: (context, state) => MainLayout(
+        currentIndex: 1, // Budgets page index (transactions=0, budgets=1, analytics=2, settings=3)
+        title: 'Edit Budget',
+        showBottomNavBar: false,
+        showBackButton: false,
+        child: EditBudgetPage(budgetId: state.pathParameters['id']!),
       ),
     ),
     GoRoute(

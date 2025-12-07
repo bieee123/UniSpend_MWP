@@ -68,7 +68,7 @@ class _CalendarPageState extends State<CalendarPage> {
                 shape: BoxShape.rectangle,
                 borderRadius: BorderRadius.all(Radius.circular(8)),
               ),
-              markersMaxCount: 3, // Show up to 3 dots for multiple transactions
+              markersMaxCount: 4, // Show up to 4 dots for multiple transactions
             ),
             headerStyle: HeaderStyle(
               formatButtonVisible: false, // Menyembunyikan tombol format bawaan karena kita gunakan tombol kustom
@@ -126,10 +126,20 @@ class _CalendarPageState extends State<CalendarPage> {
     });
   }
 
+  // Store transactions for use in eventLoader
+  List<TransactionModel>? _cachedTransactions;
+
   List<TransactionModel> _getEventsForDay(DateTime day) {
-    // This function only gets called by TableCalendar when needed
-    // So it should be efficient and not trigger unnecessary rebuilds
-    return [];
+    // Use cached transactions if available
+    final allTransactions = _cachedTransactions ?? [];
+
+    // Filter transactions for the specific day
+    final selectedDate = DateTime(day.year, day.month, day.day);
+    return allTransactions
+        .where((transaction) =>
+            DateTime(transaction.date.year, transaction.date.month, transaction.date.day)
+                .isAtSameMomentAs(selectedDate))
+        .toList();
   }
 
   Widget _buildTransactionList() {
@@ -143,6 +153,9 @@ class _CalendarPageState extends State<CalendarPage> {
         }
 
         final allTransactions = snapshot.data ?? [];
+
+        // Cache transactions for the eventLoader
+        _cachedTransactions = allTransactions;
 
         // Filter transactions for the selected day
         final selectedDate = DateTime(_selectedDay.year, _selectedDay.month, _selectedDay.day);

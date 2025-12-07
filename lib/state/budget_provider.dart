@@ -213,6 +213,8 @@ class BudgetProvider extends ChangeNotifier {
   Future<void> updateBudget(BudgetModel budget) async {
     try {
       await _repository.updateBudget(budget);
+      // Recalculate spent amounts for all budgets since category might have changed
+      await _updateBudgetSpentAmounts();
       // The budget will be updated automatically via the stream listener
       // notifyListeners() is called in the stream listener
     } catch (e) {

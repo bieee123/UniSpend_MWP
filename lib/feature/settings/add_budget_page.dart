@@ -13,6 +13,7 @@ class AddBudgetPage extends StatefulWidget {
 }
 
 class _AddBudgetPageState extends State<AddBudgetPage> {
+  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
   String _selectedCategory = "Food & Drink";
   DateTime? _endDate;
@@ -26,6 +27,49 @@ class _AddBudgetPageState extends State<AddBudgetPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Budget Name Input
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: const Color(0xFF0A7F66).withOpacity(0.05), // Light Emerald Deep Green background
+                borderRadius: BorderRadius.circular(16), // More rounded corners
+                border: Border.all(
+                  color: const Color(0xFF0A7F66).withOpacity(0.3), // Emerald Deep Green border
+                  width: 1,
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Budget Name",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: const Color(0xFF0A7F66), // Emerald Deep Green text
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  TextField(
+                    controller: _nameController,
+                    decoration: InputDecoration(
+                      hintText: "Enter budget name",
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(color: const Color(0xFF0A7F66), width: 2), // Emerald Deep Green
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+
             // Budget Amount Input
             Container(
               padding: const EdgeInsets.all(16),
@@ -342,6 +386,16 @@ class _AddBudgetPageState extends State<AddBudgetPage> {
                     return;
                   }
 
+                  if (_nameController.text.trim().isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Please enter a budget name'),
+                        backgroundColor: Colors.orange,
+                      ),
+                    );
+                    return;
+                  }
+
                   if (amount <= 0) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
@@ -371,7 +425,7 @@ class _AddBudgetPageState extends State<AddBudgetPage> {
                   final budget = BudgetModel(
                     id: DateTime.now().millisecondsSinceEpoch.toString(), // Generate unique ID
                     userId: FirebaseAuth.instance.currentUser!.uid,
-                    name: _selectedCategory,
+                    name: _nameController.text.trim(),
                     limit: amount,
                     spent: 0.0,
                     startDate: DateTime.now(), // Start from today
@@ -470,6 +524,7 @@ class _AddBudgetPageState extends State<AddBudgetPage> {
 
   @override
   void dispose() {
+    _nameController.dispose();
     _amountController.dispose();
     super.dispose();
   }

@@ -82,111 +82,117 @@ class SwipeableTransactionCard extends StatelessWidget {
           ],
         ),
       ),
-      child: Container(
-        margin: const EdgeInsets.symmetric(
-            horizontal: 10,
-            vertical: 4), // Reduced horizontal margin to make card wider
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16), // Increased border radius
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
-              spreadRadius: 1,
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-              vertical: 10.0,
-              horizontal:
-                  10.0), // Reduced horizontal padding to make card wider
-          child: Row(
-            children: [
-              Container(
-                width: 56,
-                height: 56,
-                decoration: BoxDecoration(
-                  color: categoryIconColor.withOpacity(
-                      0.1), // Lighter background for better icon contrast
-                  borderRadius: BorderRadius.circular(28),
-                  border: Border.all(
-                    color: categoryIconColor
-                        .withOpacity(0.3), // Slightly transparent border
-                    width: 1,
-                  ),
-                ),
-                child: Icon(
-                  _getCategoryIcon(categoryTitle),
-                  color: categoryIconColor,
-                  size: 24, // Larger icon for better visibility
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      categoryTitle,
-                      style: const TextStyle(
-                        fontWeight: FontWeight
-                            .w700, // Increased weight for better hierarchy
-                        fontSize: 16, // Larger font for better readability
-                        color: Color(
-                            0xFF333333), // Darker color for better contrast
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      description,
-                      style: TextStyle(
-                        fontSize: 14, // Slightly larger for readability
-                        color: Colors
-                            .grey[700], // Darker gray for better visibility
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.account_balance_wallet_outlined,
-                          size: 14,
-                          color: Colors.grey[500],
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          paymentMethod,
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey[500],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 12),
-              Text(
-                amount,
-                textAlign: TextAlign.right,
-                style: TextStyle(
-                  color: transaction.type == 'income'
-                      ? const Color(0xFF2ECC71) // Stronger green for income
-                      : const Color(0xFFD9534F), // Stronger red for expense
-                  fontWeight: FontWeight.w800, // Bolder for emphasis
-                  fontSize: 18, // Larger font size for dominance
-                ),
+      child: GestureDetector(
+        onTap: () {
+          // Navigate to edit transaction page on tap
+          context.push('/transactions/edit/${transaction.id}');
+        },
+        child: Container(
+          margin: const EdgeInsets.symmetric(
+              horizontal: 10,
+              vertical: 4), // Reduced horizontal margin to make card wider
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16), // Increased border radius
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.1),
+                spreadRadius: 1,
+                blurRadius: 8,
+                offset: const Offset(0, 2),
               ),
             ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+                vertical: 10.0,
+                horizontal:
+                    10.0), // Reduced horizontal padding to make card wider
+            child: Row(
+              children: [
+                Container(
+                  width: 56,
+                  height: 56,
+                  decoration: BoxDecoration(
+                    color: categoryIconColor.withOpacity(
+                        0.1), // Lighter background for better icon contrast
+                    borderRadius: BorderRadius.circular(28),
+                    border: Border.all(
+                      color: categoryIconColor
+                          .withOpacity(0.3), // Slightly transparent border
+                      width: 1,
+                    ),
+                  ),
+                  child: Icon(
+                    _getCategoryIcon(categoryTitle),
+                    color: categoryIconColor,
+                    size: 24, // Larger icon for better visibility
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        categoryTitle,
+                        style: const TextStyle(
+                          fontWeight: FontWeight
+                              .w700, // Increased weight for better hierarchy
+                          fontSize: 16, // Larger font for better readability
+                          color: Color(
+                              0xFF333333), // Darker color for better contrast
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        description,
+                        style: TextStyle(
+                          fontSize: 14, // Slightly larger for readability
+                          color: Colors
+                              .grey[700], // Darker gray for better visibility
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.account_balance_wallet_outlined,
+                            size: 14,
+                            color: Colors.grey[500],
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            paymentMethod,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey[500],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  amount,
+                  textAlign: TextAlign.right,
+                  style: TextStyle(
+                    color: transaction.type == 'income'
+                        ? const Color(0xFF2ECC71) // Stronger green for income
+                        : const Color(0xFFD9534F), // Stronger red for expense
+                    fontWeight: FontWeight.w800, // Bolder for emphasis
+                    fontSize: 18, // Larger font size for dominance
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
