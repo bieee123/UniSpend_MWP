@@ -15,6 +15,42 @@ class OverviewPage extends StatefulWidget {
 }
 
 class _OverviewPageState extends State<OverviewPage> {
+  DateTime _selectedMonth = DateTime.now();
+  List<String> _getMonthRange() {
+    List<String> months = [];
+    DateTime now = DateTime.now();
+
+    // Add 4 months back
+    for (int i = 4; i >= 1; i--) {
+      DateTime month = DateTime(now.year, now.month - i);
+      months.add(_formatMonthYear(month));
+    }
+
+    // Add current month
+    months.add(_formatMonthYear(now));
+
+    // Add 3 months forward
+    for (int i = 1; i <= 3; i++) {
+      DateTime month = DateTime(now.year, now.month + i);
+      months.add(_formatMonthYear(month));
+    }
+
+    return months;
+  }
+
+  String _formatMonthYear(DateTime date) {
+    String month = _getMonthName(date.month);
+    return "$month ${date.year}";
+  }
+
+  String _getMonthName(int month) {
+    const months = [
+      '', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ];
+    return months[month];
+  }
+
   @override
   Widget build(BuildContext context) {
     final currentUser = FirebaseAuth.instance.currentUser;
@@ -104,9 +140,15 @@ class _OverviewPageState extends State<OverviewPage> {
               }
 
               // If there's no error but no data either, show a professional placeholder
-              final transactions = snapshot.data ?? [];
+              final allTransactions = snapshot.data ?? [];
 
-              // Calculate income and expenses from transactions
+              // Filter transactions by selected month
+              final transactions = allTransactions.where((transaction) {
+                return transaction.date.year == _selectedMonth.year &&
+                       transaction.date.month == _selectedMonth.month;
+              }).toList();
+
+              // Calculate income and expenses from transactions for the selected month
               double totalIncome = 0;
               double totalExpense = 0;
               Map<String, double> expenseByCategory = {};
@@ -143,10 +185,14 @@ class _OverviewPageState extends State<OverviewPage> {
                         ),
                       ),
                       child: MonthSelector(
-                        months: const ["Jul 2025", "Aug 2025", "Sep 2025", "Oct 2025", "Nov 2025"],
-                        initialIndex: 4,
+                        months: _getMonthRange(),
+                        initialIndex: 4, // Current month is typically at index 4 (5 months back + current = index 4)
                         onMonthChanged: (index) {
-                          // Handle month change
+                          // Calculate selected month based on index
+                          setState(() {
+                            DateTime now = DateTime.now();
+                            _selectedMonth = DateTime(now.year, now.month + (index - 4)); // index 4 corresponds to current month
+                          });
                         },
                       ),
                     ),

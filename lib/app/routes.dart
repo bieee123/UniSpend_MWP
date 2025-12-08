@@ -118,6 +118,7 @@ final GoRouter router = GoRouter(
       builder: (context, state) => MainLayout(
         currentIndex: 4, // Settings page (transactions=0, budgets=1, overview=2, calendar=3, settings=4)
         title: 'Saving Goals',
+        showBottomNavBar: true, // Show bottom navigation bar for the list page
         child: const SavingGoalsListPage(),
         floatingActionButton: Container(
           width: 56,
@@ -187,6 +188,7 @@ final GoRouter router = GoRouter(
       builder: (context, state) => MainLayout(
         currentIndex: 4, // Settings page index (transactions=0, budgets=1, overview=2, calendar=3, settings=4)
         title: 'Create Goal',
+        showBottomNavBar: false, // Hide bottom navigation bar for create page
         child: const CreateGoalPage(),
       ),
     ),
@@ -196,6 +198,7 @@ final GoRouter router = GoRouter(
       builder: (context, state) => MainLayout(
         currentIndex: 4, // Settings page (transactions=0, budgets=1, overview=2, calendar=3, settings=4)
         title: 'Goal Detail',
+        showBottomNavBar: false, // Hide bottom navigation bar for detail page
         child: GoalDetailPage(goalId: state.pathParameters['id']!),
       ),
     ),

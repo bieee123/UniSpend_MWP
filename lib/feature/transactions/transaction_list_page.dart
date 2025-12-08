@@ -55,7 +55,7 @@ class _TransactionListPageState extends State<TransactionListPage> {
   }
 
   String _formatDate(DateTime date) {
-    return '${_getWeekdayName(date.weekday)}, ${date.day} ${_getMonthName(date.month)}';
+    return '${_getWeekdayName(date.weekday)}, ${date.day} ${_getMonthName(date.month)} ${date.year}';
   }
 
   String _getWeekdayName(int weekday) {
@@ -143,8 +143,7 @@ class _TransactionListPageState extends State<TransactionListPage> {
                       if (snapshot.hasData) {
                         final allTransactions = snapshot.data ?? [];
 
-                        // Filter transactions based on selected period (Weekly, Monthly, Yearly)
-                        final now = DateTime.now();
+                        // Filter transactions based on selected period (Weekly, Monthly, Yearly) and selected month
                         List<TransactionModel> filteredTransactions = [];
 
                         for (var transaction in allTransactions) {
@@ -152,18 +151,48 @@ class _TransactionListPageState extends State<TransactionListPage> {
 
                           switch (_selectedFilter) {
                             case 'Weekly':
-                              // Include transactions from the last 7 days
-                              final daysDiff = now.difference(transaction.date).inDays;
-                              includeTransaction = daysDiff <= 7 && daysDiff >= 0;
+                              // For Weekly filter, divide the month into weeks of 7 days (1-7, 8-14, 15-21, 22-end)
+                              // Find which week the selected date is in
+                              int weekStartDay;
+                              if (_currentMonth.day <= 7) {
+                                weekStartDay = 1;  // First week of the month (days 1-7)
+                              } else if (_currentMonth.day <= 14) {
+                                weekStartDay = 8;  // Second week of the month (days 8-14)
+                              } else if (_currentMonth.day <= 21) {
+                                weekStartDay = 15; // Third week of the month (days 15-21)
+                              } else {
+                                weekStartDay = 22; // Fourth/fifth week of the month (days 22-end)
+                              }
+
+                              // Get the last day of the month to make sure we don't exceed it
+                              int maxDayInMonth = DateTime(_currentMonth.year, _currentMonth.month + 1, 0).day;
+                              int weekEndDay = weekStartDay + 6;
+                              if (weekEndDay > maxDayInMonth) {
+                                weekEndDay = maxDayInMonth;  // Adjust if week goes beyond month end
+                              }
+
+                              DateTime startOfSelectedWeek = DateTime(_currentMonth.year, _currentMonth.month, weekStartDay);
+                              DateTime endOfSelectedWeek = DateTime(_currentMonth.year, _currentMonth.month, weekEndDay);
+
+                              includeTransaction =
+                                transaction.date.isAtSameMomentAs(startOfSelectedWeek) ||
+                                (transaction.date.isAfter(startOfSelectedWeek.subtract(const Duration(days: 1))) &&
+                                 transaction.date.isBefore(endOfSelectedWeek.add(const Duration(days: 1))) &&
+                                 transaction.date.month == _currentMonth.month &&
+                                 transaction.date.year == _currentMonth.year) ||
+                                (transaction.date.day >= weekStartDay &&
+                                 transaction.date.day <= weekEndDay &&
+                                 transaction.date.month == _currentMonth.month &&
+                                 transaction.date.year == _currentMonth.year);
                               break;
                             case 'Monthly':
-                              // Include transactions from the same month and year
-                              includeTransaction = transaction.date.month == now.month &&
-                                                  transaction.date.year == now.year;
+                              // Include transactions from the selected month and year
+                              includeTransaction = transaction.date.month == _currentMonth.month &&
+                                                  transaction.date.year == _currentMonth.year;
                               break;
                             case 'Yearly':
-                              // Include transactions from the same year
-                              includeTransaction = transaction.date.year == now.year;
+                              // Include transactions from the same year as selected
+                              includeTransaction = transaction.date.year == _currentMonth.year;
                               break;
                             default:
                               includeTransaction = true;
