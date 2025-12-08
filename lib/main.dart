@@ -11,6 +11,7 @@ import 'state/settings_provider.dart';
 import 'state/budget_provider.dart';
 import 'state/transaction_provider.dart';
 import 'state/category_provider.dart';
+import 'state/saving_goals_provider.dart';
 import 'app/routes.dart';
 import 'app/theme.dart';
 
@@ -34,6 +35,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => BudgetProvider()),
         ChangeNotifierProvider(create: (_) => TransactionProvider()),
         ChangeNotifierProvider(create: (_) => CategoryProvider()),
+        ChangeNotifierProvider(create: (_) => SavingGoalsProvider()),
       ],
       child: const UniSpendApp(),
     ),

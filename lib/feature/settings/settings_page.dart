@@ -284,6 +284,24 @@ class SettingsPage extends StatelessWidget {
                     ),
                   ),
 
+                  const SizedBox(height: 10),
+
+                  // Saving Goals
+                  Card(
+                    elevation: 2, // Set a consistent elevation
+                    child: ListTile(
+                      title: Text("Saving Goals",
+                        style: TextStyle(
+                          color: const Color(0xFF0A7F66), // Emerald Deep Green
+                        ),
+                      ),
+                      trailing: Icon(Icons.savings, color: const Color(0xFF0A7F66)), // Emerald Deep Green
+                      onTap: () {
+                        context.push('/saving-goals');
+                      },
+                    ),
+                  ),
+
                   // Login/Register buttons at the bottom when not logged in
                   if (currentUser == null) ...[
                     const Spacer(), // Push login buttons to bottom

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 // Pages
 import '../feature/Auth/login_page.dart';
@@ -18,6 +19,9 @@ import '../feature/settings/budget_limit_page.dart';
 import '../feature/settings/edit_budget_page.dart';
 import '../feature/settings/export_page.dart';
 import '../feature/settings/notification_settings_page.dart';
+import '../feature/saving_goals/saving_goals_list_page.dart';
+import '../feature/saving_goals/create_goal_page.dart';
+import '../feature/saving_goals/goal_detail_page.dart';
 import '../feature/calendar/calendar_page.dart';
 import '../feature/analytics/analytics_page.dart';
 import '../feature/splash/splash_screen.dart';
@@ -107,6 +111,98 @@ final GoRouter router = GoRouter(
         title: 'Notifications',
         child: const NotificationSettingsPage(isInMainLayout: true),
       ),
+    ),
+    GoRoute(
+      path: '/saving-goals',
+      name: 'saving_goals',
+      builder: (context, state) => MainLayout(
+        currentIndex: 4, // Settings page (transactions=0, budgets=1, overview=2, calendar=3, settings=4)
+        title: 'Saving Goals',
+        child: const SavingGoalsListPage(),
+        floatingActionButton: Container(
+          width: 56,
+          height: 56,
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.green, Colors.teal],
+            ),
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black26,
+                offset: Offset(0, 4),
+                blurRadius: 8,
+              ),
+            ],
+          ),
+          child: FloatingActionButton(
+            onPressed: () async {
+              if (FirebaseAuth.instance.currentUser == null) {
+                // Show login prompt
+                final shouldLogin = await showDialog<bool>(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text('Login Required'),
+                    content: const Text('You need to login to create saving goals. Would you like to login now?'),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(false),
+                        child: const Text('Cancel'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(true);
+                        },
+                        child: const Text('Login'),
+                      ),
+                    ],
+                  ),
+                );
+
+                if (shouldLogin == true) {
+                  GoRouter.of(context).push('/login');
+                }
+              } else {
+                GoRouter.of(context).push('/saving-goals/create');
+              }
+            },
+            backgroundColor: Colors.transparent,
+            heroTag: "add_saving_goal_fab", // Consistent with budget page approach
+            elevation: 0,
+            highlightElevation: 0,
+            focusElevation: 0,
+            disabledElevation: 0,
+            child: const Icon(
+              Icons.add,
+              color: Colors.white,
+            ),
+          ),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      ),
+    ),
+    GoRoute(
+      path: '/saving-goals/create',
+      name: 'create_saving_goal',
+      builder: (context, state) => MainLayout(
+        currentIndex: 4, // Settings page index (transactions=0, budgets=1, overview=2, calendar=3, settings=4)
+        title: 'Create Goal',
+        child: const CreateGoalPage(),
+      ),
+    ),
+    GoRoute(
+      path: '/saving-goals/:id',
+      name: 'saving_goal_detail',
+      builder: (context, state) => MainLayout(
+        currentIndex: 4, // Settings page (transactions=0, budgets=1, overview=2, calendar=3, settings=4)
+        title: 'Goal Detail',
+        child: GoalDetailPage(goalId: state.pathParameters['id']!),
+      ),
+    ),
+    GoRoute(
+      path: '/saving-goals/edit/:id',
+      name: 'edit_saving_goal',
+      redirect: (context, state) => '/saving-goals/${state.pathParameters['id']}', // For now, redirect to detail page since we don't have a dedicated edit page yet
     ),
     GoRoute(
       path: '/wallet', // Keep the path for backward compatibility or redirect

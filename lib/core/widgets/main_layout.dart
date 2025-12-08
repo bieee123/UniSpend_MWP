@@ -8,6 +8,8 @@ class MainLayout extends StatefulWidget {
   final String title;
   final bool showBottomNavBar;
   final bool showBackButton;
+  final Widget? floatingActionButton;
+  final FloatingActionButtonLocation? floatingActionButtonLocation;
 
   const MainLayout({
     Key? key,
@@ -16,6 +18,8 @@ class MainLayout extends StatefulWidget {
     required this.title,
     this.showBottomNavBar = true,
     this.showBackButton = true,
+    this.floatingActionButton,
+    this.floatingActionButtonLocation,
   }) : super(key: key);
 
   @override
@@ -62,6 +66,8 @@ class _MainLayoutState extends State<MainLayout> {
               },
             )
           : null,
+      floatingActionButton: widget.floatingActionButton,
+      floatingActionButtonLocation: widget.floatingActionButtonLocation,
     );
   }
 }
