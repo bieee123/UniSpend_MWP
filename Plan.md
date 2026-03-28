@@ -1,13 +1,3 @@
-Below is the **fully combined, updated, and corrected plan**, now rewritten so the application uses **Firebase instead of SQLite** as the primary database.
-Everything has been merged into **one unified, clean, English project plan**, including:
-
-✔ Your original detailed plan
-✔ The unified combined plan
-✔ Priority requirements from the Wireless & Mobile Programming project
-✔ Full conversion from SQLite → **Firebase Firestore**
-
----
-
 # **📘 Unified Updated Project Plan — UniSpend (Student Expense Tracker App)**
 
 ### _Wireless & Mobile Programming Final Project — Flutter (Firebase Version)_
